@@ -1,6 +1,7 @@
 package com.dermo.app.ammj.app.controller
 
 import com.dermo.app.ammj.api.HealthCheckApi
+import com.dermo.app.ammj.common.route.Route
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 import kotlin.collections.HashMap
 
 @RestController
-@RequestMapping(value = [("/health")], produces = [(MediaType.APPLICATION_JSON_VALUE)])
+@RequestMapping(value = [(Route.HEALTH)], produces = [(MediaType.APPLICATION_JSON_VALUE)])
 class HealthCheckController() : HealthCheckApi {
 
     @GetMapping
