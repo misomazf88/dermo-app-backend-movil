@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ feature/IniciarSesion ]
   pull_request:
-    branches: [ develop ]
+    branches: [ feature/IniciarSesion ]
   workflow_dispatch:
 
 jobs:
