@@ -31,6 +31,7 @@ buildscript {
         classpath(kotlin("gradle-plugin"))
         classpath(kotlin("allopen", kotlinVersion))
         classpath(kotlin("noarg", kotlinVersion))
+        classpath("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1")
     }
 }
 
@@ -48,6 +49,7 @@ allprojects {
     apply(plugin = "jacoco")
     apply(plugin = "org.springframework.boot")
     apply(plugin = "io.spring.dependency-management")
+    apply("sonar.gradle")
 
     jacoco {
         toolVersion = Versions.JACOCO
@@ -77,6 +79,7 @@ allprojects {
         implementation("org.springframework.boot:spring-boot-starter-cache")
         implementation("org.springframework.boot:spring-boot-starter-validation:2.5.6")
         implementation ("com.google.code.gson:gson:2.8.5")
+        implementation("org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1")
     }
 
     val outputDir = "${project.buildDir}/reports/ktlint/"

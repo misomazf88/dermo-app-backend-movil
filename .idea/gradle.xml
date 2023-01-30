@@ -16,7 +16,6 @@
             <option value="$PROJECT_DIR$/dermo-diagnostic-common" />
             <option value="$PROJECT_DIR$/dermo-diagnostic-core" />
             <option value="$PROJECT_DIR$/dermo-diagnostic-domain" />
-            <option value="$PROJECT_DIR$/dermo-diagnostic-integrationtest" />
             <option value="$PROJECT_DIR$/dermo-diagnostic-listener" />
             <option value="$PROJECT_DIR$/dermo-diagnostic-schema" />
           </set>
