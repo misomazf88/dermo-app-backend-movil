@@ -90,11 +90,4 @@ class DiagnosticControllerTest {
             .andDo(MockMvcResultHandlers.print())
             .andReturn()
     }
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(
-                MockMvcResultMatchers.jsonPath("$.nature").value("${response.nature}")
-            )
-            .andDo(MockMvcResultHandlers.print())
-            .andReturn()
-    }
 }
