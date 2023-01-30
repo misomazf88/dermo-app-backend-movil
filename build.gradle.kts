@@ -12,15 +12,6 @@ object Versions {
 plugins {
     kotlin("jvm") version "1.6.0"
     jacoco
-    id "org.sonarqube" version "3.5.0.2730"
-}
-
-sonarqube {
-  properties {
-    property "sonar.projectKey", "misomazf88_dermo-app-backend-movil"
-    property "sonar.organization", "misomazf88"
-    property "sonar.host.url", "https://sonarcloud.io"
-  }
 }
 
 buildscript {
