@@ -1,9 +1,9 @@
 name: CI/CD Pipeline
 on:
   push:
-    branches: [ feature/develop ]
+    branches: [ develop ]
   pull_request:
-    branches: [ feature/develop ]
+    branches: [ develop ]
   workflow_dispatch:
 jobs:    
   unit-test:
