@@ -25,9 +25,13 @@ class DiagnosticService(
             createAcccountRequest.correoElectronico, createAcccountRequest.contrasena
         )
 
-        val newAccount = repository.save(DiagnosticMapper.getDiagnosticEntity(createAcccountRequest))
+        if (repository.findByCorreoElectronico(createAcccountRequest.correoElectronico).isPresent) {
+            DiagnosticMapper.createAccountResponseCorreoExiste()
+        } else {
+            val newAccount = repository.save(DiagnosticMapper.getDiagnosticEntity(createAcccountRequest))
 
-        DiagnosticMapper.createAccountResponse(newAccount)
+            DiagnosticMapper.createAccountResponse(newAccount)
+        }
     } catch (ex: Exception) {
         logger.error(
             "--$APP_NAME --$CLASS:create --Request[{}] --Exception:[{}]",

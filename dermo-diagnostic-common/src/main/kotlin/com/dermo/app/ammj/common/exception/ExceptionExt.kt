@@ -9,3 +9,11 @@ fun Exception.toUnexpectedException(): DiagnosticException {
         this.message ?: this.cause?.message
     )
 }
+
+fun Exception.toPSQLException(): DiagnosticException {
+    return DiagnosticException(
+        500,
+        Exceptions.CODE_INTERNAL_SERVER_ERROR,
+        "Error en DB"
+    )
+}

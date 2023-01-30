@@ -3,6 +3,8 @@ package com.dermo.app.ammj.core.mapper
 import com.dermo.app.ammj.common.request.CreateAccountRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.domain.entity.AccountEntity
+import java.sql.Timestamp
+import java.time.LocalDateTime
 import java.util.UUID
 
 object DiagnosticMapper {
@@ -18,5 +20,11 @@ object DiagnosticMapper {
         CreateAccountResponse(
             description = "Cuenta creada exitosamente",
             createdAt = entity.createdAt!!,
+        )
+
+    fun createAccountResponseCorreoExiste() =
+        CreateAccountResponse(
+            description = "El correo ingresado ya esta registrado",
+            createdAt = Timestamp.valueOf(LocalDateTime.now())
         )
 }
