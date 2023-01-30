@@ -31,7 +31,7 @@ jobs:
         run: chmod +x ./gradlew
         
       - name: Run tests
-        run: ./gradlew test --warning-mode all
+        run: ./gradlew test --warning-mode all --stacktrace
         env:
           DATABASE_HOST: localhost:5432
           DATABASE_NAME: dermo-diagnostic-db
