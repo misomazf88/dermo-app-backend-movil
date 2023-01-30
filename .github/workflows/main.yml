@@ -26,7 +26,7 @@ jobs:
           - 5432:5432
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: Make gradlew executable
         run: chmod +x ./gradlew
@@ -40,7 +40,7 @@ jobs:
           POSTGRES_PASSWORD: millonarios10
 
       - name: Upload test report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: unit_test_report
           path: app/build/reports/tests/testDebugUnitTest/
@@ -78,7 +78,7 @@ jobs:
           - 5432:5432
     steps:
       - name: Checkout the code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
@@ -120,11 +120,11 @@ jobs:
           MENSAJE_EXITO: El resultado del análisis estático fue exitoso
         run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
         
-  auto-merge:
-    needs: [static-code-analysis]
-    runs-on: ubuntu-latest
-    steps:
-      - name: automerge
-        uses: "pascalgn/automerge-action@v0.14.2"
-        env:
-          GITHUB_TOKEN: "${{ secrets.TOKEN_CI }}"
+  #auto-merge:
+    #needs: [static-code-analysis]
+    #runs-on: ubuntu-latest
+    #steps:
+      #- name: automerge
+        #uses: "pascalgn/automerge-action@v0.14.2"
+        #env:
+          #GITHUB_TOKEN: "${{ secrets.TOKEN_CI }}"
