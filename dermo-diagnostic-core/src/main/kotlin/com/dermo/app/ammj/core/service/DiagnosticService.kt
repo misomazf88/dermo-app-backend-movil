@@ -2,8 +2,8 @@ package com.dermo.app.ammj.core.service
 
 import com.dermo.app.ammj.common.environment.VisionEnvironment.Companion.APP_NAME
 import com.dermo.app.ammj.common.exception.toUnexpectedException
-import com.dermo.app.ammj.common.request.CreateDiagnosticRequest
-import com.dermo.app.ammj.common.response.CreateDiagnosticResponse
+import com.dermo.app.ammj.common.request.CreateAccountRequest
+import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.core.mapper.DiagnosticMapper
 import com.dermo.app.ammj.domain.repository.DiagnosticRepository
 import org.slf4j.LoggerFactory
@@ -19,19 +19,19 @@ class DiagnosticService(
     private val CLASS = DiagnosticService::class.simpleName
 
     @Transactional
-    fun createDiagnostic(createDiagnosticRequest: CreateDiagnosticRequest): CreateDiagnosticResponse = try {
+    fun createAccount(createAcccountRequest: CreateAccountRequest): CreateAccountResponse = try {
         logger.info(
-            "--$APP_NAME --$CLASS:createDiagnostic --diagnosticId[{}] --createdAt[{}] --diagnosticDescription[{}] --diagnostic_description[{}]",
-            createDiagnosticRequest.diagnosticId, createDiagnosticRequest.createdAt, createDiagnosticRequest.diagnosticDescription, createDiagnosticRequest.treatment
+            "--$APP_NAME --$CLASS:createAccount --correoElectronico[{}] --contrasena[{}]",
+            createAcccountRequest.correoElectronico, createAcccountRequest.contrasena
         )
 
-        val newDiagnostic = repository.save(DiagnosticMapper.getDiagnosticEntity(createDiagnosticRequest))
+        val newAccount = repository.save(DiagnosticMapper.getDiagnosticEntity(createAcccountRequest))
 
-        DiagnosticMapper.getNatureResponse(newDiagnostic)
+        DiagnosticMapper.createAccountResponse(newAccount)
     } catch (ex: Exception) {
         logger.error(
             "--$APP_NAME --$CLASS:create --Request[{}] --Exception:[{}]",
-            createDiagnosticRequest, ex.message
+            createAcccountRequest, ex.message
         )
         throw ex.toUnexpectedException()
     }

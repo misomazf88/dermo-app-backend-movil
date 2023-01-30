@@ -1,1 +1,1 @@
-C:\git\Maestria\dermo-diagnostic-ms\dermo-diagnostic-api\build\classes\kotlin\main\com\dermo\app\ammj\api\HealthCheckApi.class
+C:\git\Maestria\dermo-app-backend-web\dermo-diagnostic-api\build\classes\kotlin\main\com\dermo\app\ammj\api\DiagnosticControllerApi.class;C:\git\Maestria\dermo-app-backend-web\dermo-diagnostic-api\build\classes\kotlin\main\com\dermo\app\ammj\api\HealthCheckApi.class

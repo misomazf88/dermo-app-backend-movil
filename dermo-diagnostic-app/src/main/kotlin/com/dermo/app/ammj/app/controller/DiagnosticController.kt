@@ -2,7 +2,7 @@ package com.dermo.app.ammj.app.controller
 
 import com.dermo.app.ammj.api.DiagnosticControllerApi
 import com.dermo.app.ammj.common.constant.Constant.Trace.DERMO_TRACEABILITY_ID
-import com.dermo.app.ammj.common.request.CreateDiagnosticRequest
+import com.dermo.app.ammj.common.request.CreateAccountRequest
 import com.dermo.app.ammj.common.route.Route
 import com.dermo.app.ammj.core.service.DiagnosticService
 import org.springframework.http.MediaType
@@ -20,9 +20,9 @@ class DiagnosticController(
     private val accountService: DiagnosticService
 ) : DiagnosticControllerApi {
 
-    @PostMapping(Route.Diagnostic.DIAGNOSTIC)
+    @PostMapping(Route.Diagnostic.ACCOUNT)
     override fun createDiagnostic(
         @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
-        @RequestBody @Valid createDiagnosticRequest: CreateDiagnosticRequest
-    ) = accountService.createDiagnostic(createDiagnosticRequest)
+        @RequestBody @Valid AccountRequest: CreateAccountRequest
+    ) = accountService.createAccount(AccountRequest)
 }
