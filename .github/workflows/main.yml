@@ -124,10 +124,7 @@ jobs:
     needs: [static-code-analysis]
     runs-on: ubuntu-latest
     steps:
-    - name: Get commit
-      id: commit
-      uses: pr-mpt/actions-commit-hash@v2
-      
+    
     - uses: actions/checkout@v2
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting.
@@ -135,7 +132,7 @@ jobs:
 
     # Triggering SonarQube analysis as results of it are required by Quality Gate check.
     - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@${{ steps.commit.outputs.long }}
+      uses: sonarsource/sonarqube-scan-action@761bb12fed0cb89f0a280619d737e69962c44543
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: https://sonarcloud.io/project/branches_list?id=misomazf88_dermo-app-backend-movil
@@ -143,7 +140,7 @@ jobs:
     # Check the Quality Gate status.
     - name: SonarQube Quality Gate check
       id: sonarqube-quality-gate-check
-      uses: sonarsource/sonarqube-quality-gate-action@${{ steps.commit.outputs.long }}
+      uses: sonarsource/sonarqube-quality-gate-action@761bb12fed0cb89f0a280619d737e69962c44543
       # Force to fail step after specific time.
       timeout-minutes: 5
       env:
