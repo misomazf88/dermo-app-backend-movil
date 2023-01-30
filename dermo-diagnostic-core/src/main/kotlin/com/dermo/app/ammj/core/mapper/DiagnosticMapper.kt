@@ -1,23 +1,22 @@
 package com.dermo.app.ammj.core.mapper
 
-import com.dermo.app.ammj.common.request.CreateDiagnosticRequest
-import com.dermo.app.ammj.common.response.CreateDiagnosticResponse
-import com.dermo.app.ammj.domain.entity.DiagnosticEntity
-import java.sql.Timestamp
+import com.dermo.app.ammj.common.request.CreateAccountRequest
+import com.dermo.app.ammj.common.response.CreateAccountResponse
+import com.dermo.app.ammj.domain.entity.AccountEntity
+import java.util.UUID
 
 object DiagnosticMapper {
 
-    fun getDiagnosticEntity(request: CreateDiagnosticRequest) =
-        DiagnosticEntity(
-            id = request.diagnosticId,
-            createdAt = Timestamp.valueOf(request.createdAt),
-            diagnosticDescription = request.diagnosticDescription,
-            treatment = request.treatment
+    fun getDiagnosticEntity(request: CreateAccountRequest) =
+        AccountEntity(
+            id = UUID.randomUUID(),
+            correoElectronico = request.correoElectronico,
+            contrasena = request.contrasena
         )
 
-    fun getNatureResponse(entity: DiagnosticEntity) =
-        CreateDiagnosticResponse(
-            diagnosticId = entity.id!!,
+    fun createAccountResponse(entity: AccountEntity) =
+        CreateAccountResponse(
+            description = "Cuenta creada exitosamente",
             createdAt = entity.createdAt!!,
         )
 }

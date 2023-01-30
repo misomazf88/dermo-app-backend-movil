@@ -1,16 +1,14 @@
-package com.dermo.app.ammj.common.response
+package com.dermo.app.ammj.common.request
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-import java.sql.Timestamp
-import java.util.UUID
 import javax.validation.constraints.NotNull
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class CreateDiagnosticResponse(
+data class CreateAccountRequest(
     @field:NotNull
-    var diagnosticId: UUID,
+    var correoElectronico: String,
 
     @field:NotNull
-    var createdAt: Timestamp,
+    var contrasena: String
 )

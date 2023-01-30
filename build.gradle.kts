@@ -77,6 +77,7 @@ allprojects {
         implementation("org.projectlombok:lombok")
         implementation("org.springframework.boot:spring-boot-starter-cache")
         implementation("org.springframework.boot:spring-boot-starter-validation:2.5.6")
+        implementation ("com.google.code.gson:gson:2.8.5")
     }
 
     val outputDir = "${project.buildDir}/reports/ktlint/"

@@ -1,11 +1,11 @@
-CREATE TABLE IF NOT EXISTS public.diagnostic (
+CREATE TABLE IF NOT EXISTS public.account (
 
-	id UUID NOT NULL,
+    id UUID NOT NULL,
+	correo_electronico varchar NOT NULL,
 	created_at timestamp NOT NULL,
-	diagnostic_description varchar NOT NULL,
-	treatment varchar NOT NULL,
+	contrasena varchar NOT NULL,
 
-	CONSTRAINT diagnostic_pk PRIMARY KEY (id)
+	CONSTRAINT account_pk PRIMARY KEY (correo_electronico)
 );
 
-CREATE INDEX IF NOT EXISTS diagnostic_created_at_idx ON public.diagnostic (created_at);
+CREATE INDEX IF NOT EXISTS account_created_at_idx ON public.account (created_at);

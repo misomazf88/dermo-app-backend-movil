@@ -1,36 +1,31 @@
 package com.dermo.app.ammj.core.util
 
-import com.dermo.app.ammj.common.request.CreateDiagnosticRequest
-import com.dermo.app.ammj.domain.entity.DiagnosticEntity
-import java.util.UUID
+import com.dermo.app.ammj.common.request.CreateAccountRequest
+import com.dermo.app.ammj.domain.entity.AccountEntity
 
 object Generators {
 
     fun getDiagnosticRequest() =
-        CreateDiagnosticRequest(
-            diagnosticId = UUID.randomUUID(),
-            createdAt = "",
-            diagnosticDescription = "Dermatitis",
-            treatment = "Crema"
+        CreateAccountRequest(
+            correoElectronico = "mazf@gmail.com",
+            contrasena = "123"
         )
 
     fun getDiagnosticEntity() =
-        DiagnosticEntity(
-            id = UUID.randomUUID(),
-            diagnosticDescription = "Dermatitis",
-            treatment = "Crema"
+        AccountEntity(
+            correoElectronico = "mazf@gmail.com",
+            contrasena = "123"
         )
 
-    fun getDiagnosticEntities(): List<DiagnosticEntity> {
-        var listOfDiagnosticEntity = listOf<DiagnosticEntity>()
+    fun getAccountEntities(): List<AccountEntity> {
+        var listOfAccountEntity = listOf<AccountEntity>()
 
-        var diagnosticEntity = DiagnosticEntity(
-            id = UUID.randomUUID(),
-            diagnosticDescription = "Dermatitis",
-            treatment = "Crema"
+        var diagnosticEntity = AccountEntity(
+            correoElectronico = "mazf@gmail.com",
+            contrasena = "123"
         )
-        listOfDiagnosticEntity += diagnosticEntity
+        listOfAccountEntity += diagnosticEntity
 
-        return listOfDiagnosticEntity
+        return listOfAccountEntity
     }
 }
