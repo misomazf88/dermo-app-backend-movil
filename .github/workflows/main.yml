@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
         
       - name: Run tests
-        run: bash ./gradlew test
+        run: sudo ./gradlew test
         env:
           DATABASE_HOST: localhost:5432
           DATABASE_NAME: dermo-diagnostic-db
@@ -71,7 +71,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_CI }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: bash ./gradlew build sonarqube --info
+        run: sudo ./gradlew build sonarqube --info
 
       - name: Validar resultado error
         if: ${{ failure() }}
