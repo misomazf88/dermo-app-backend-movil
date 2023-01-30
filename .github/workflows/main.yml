@@ -124,7 +124,8 @@ jobs:
     needs: [static-code-analysis]
     runs-on: ubuntu-latest
     steps:
-    - id: commit
+    - name: Get commit
+      id: commit
       uses: pr-mpt/actions-commit-hash@v2
       
     - uses: actions/checkout@v2
@@ -134,7 +135,7 @@ jobs:
 
     # Triggering SonarQube analysis as results of it are required by Quality Gate check.
     - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@${{ commit.outputs.long }}
+      uses: sonarsource/sonarqube-scan-action@${{ steps.commit.outputs.long }}
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: https://sonarcloud.io/project/branches_list?id=misomazf88_dermo-app-backend-movil
@@ -142,7 +143,7 @@ jobs:
     # Check the Quality Gate status.
     - name: SonarQube Quality Gate check
       id: sonarqube-quality-gate-check
-      uses: sonarsource/sonarqube-quality-gate-action@${{ commit.outputs.long }}
+      uses: sonarsource/sonarqube-quality-gate-action@${{ steps.commit.outputs.long }}
       # Force to fail step after specific time.
       timeout-minutes: 5
       env:
