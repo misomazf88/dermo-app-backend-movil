@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 jobs:    
   unit-test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
           
   static-code-analysis:
     needs: [unit-test]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
@@ -90,7 +90,7 @@ jobs:
         
   auto-merge:
     needs: [static-code-analysis]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
       - name: automerge
         uses: "pascalgn/automerge-action@v0.14.2"
