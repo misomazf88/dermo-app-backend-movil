@@ -8,21 +8,6 @@ on:
 jobs:    
   unit-test:
     runs-on: windows-latest
-    services:
-      postgres:
-        image: postgres:12.6-alpine
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: millonarios10
-          POSTGRES_DB: forum
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 5s
-          --health-timeout 2s
-          --health-retries 5
-        ports:
-          - 5432:5432
     steps:
       - name: Checkout the code
         uses: actions/checkout@v2
