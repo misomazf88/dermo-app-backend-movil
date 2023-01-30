@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:12.6-alpine
+        image: postgres:13.7
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: millonarios10
@@ -31,7 +31,7 @@ jobs:
         run: chmod +x ./gradlew
         
       - name: Run tests
-        run: ./gradlew test
+        run: ./gradlew test --warning-mode all
         env:
           DATABASE_HOST: localhost:5432
           DATABASE_NAME: dermo-diagnostic-db
