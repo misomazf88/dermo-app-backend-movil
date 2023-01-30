@@ -12,6 +12,7 @@ jobs:
       postgres:
         image: postgres:13.7
         env:
+          POSTGRES_HOST: localhost:5432
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: millonarios10
           POSTGRES_DB: dermo-diagnostic-db
@@ -33,10 +34,10 @@ jobs:
       - name: Run tests
         run: ./gradlew test --warning-mode all --stacktrace
         env:
-          DATABASE_HOST: localhost:5432
-          DATABASE_NAME: dermo-diagnostic-db
-          DATABASE_USERNAME: postgres
-          DATABASE_PASSWORD: millonarios10
+          POSTGRES_HOST: localhost:5432
+          POSTGRES_DB: dermo-diagnostic-db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: millonarios10
 
       - name: Upload test report
         uses: actions/upload-artifact@v2
