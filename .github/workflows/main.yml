@@ -45,7 +45,7 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build & Test with Code Coverage
-        run: ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification --stacktrace
+        run: chmod +x ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification --stacktrace
         env:
           DATABASE_HOST: localhost:5432
           DATABASE_NAME: dermo-diagnostic-db
