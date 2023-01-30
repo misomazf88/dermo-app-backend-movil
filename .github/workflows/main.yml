@@ -131,20 +131,19 @@ jobs:
 
     # Triggering SonarQube analysis as results of it are required by Quality Gate check.
     - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@72448c9a8b83699cf1c36301fdcd04c3550fcbf0
+      uses: sonarsource/sonarqube-scan-action@"${GITHUB_REF#refs/heads/}.${GITHUB_SHA}"
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        SONAR_HOST_URL: https://sonarcloud.io/project/branches_list?id=misomazf88_dermo-app-backend-movil
 
     # Check the Quality Gate status.
     - name: SonarQube Quality Gate check
       id: sonarqube-quality-gate-check
-      uses: sonarsource/sonarqube-quality-gate-action@72448c9a8b83699cf1c36301fdcd04c3550fcbf0
+      uses: sonarsource/sonarqube-quality-gate-action@"${GITHUB_REF#refs/heads/}.${GITHUB_SHA}"
       # Force to fail step after specific time.
       timeout-minutes: 5
       env:
        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
 
     # Optionally you can use the output from the Quality Gate in another step.
     # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
