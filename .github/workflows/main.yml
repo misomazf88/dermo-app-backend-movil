@@ -120,11 +120,11 @@ jobs:
           MENSAJE_EXITO: El resultado del análisis estático fue exitoso
         run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
         
-  #auto-merge:
-    #needs: [static-code-analysis]
-    #runs-on: ubuntu-latest
-    #steps:
-      #- name: automerge
-        #uses: "pascalgn/automerge-action@v0.14.2"
-        #env:
-          #GITHUB_TOKEN: "${{ secrets.TOKEN_CI }}"
+  quality-gate:
+    needs: [static-code-analysis]
+    runs-on: ubuntu-latest
+    steps:
+       - name: SonarQube Quality Gate Check
+       # You may pin to the exact commit or the version.
+       # uses: SonarSource/sonarqube-quality-gate-action@d304d050d930b02a896b0f85935344f023928496
+         uses: SonarSource/sonarqube-quality-gate-action@feature/IniciarSesion
