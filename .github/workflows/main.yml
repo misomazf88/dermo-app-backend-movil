@@ -32,7 +32,7 @@ jobs:
         run: chmod +x ./gradlew
         
       - name: Run tests
-        run: ./gradlew test --warning-mode all --stacktrace
+        run: ./gradlew --no-daemon -g ./.gradle-cache -Dspring.datasource.url=jdbc:postgresql://postgres:5432/dermo-diagnostic-db clean test ktlintCheck jacocoTestReport
         env:
           POSTGRES_HOST: localhost:5432
           POSTGRES_DB: dermo-diagnostic-db
