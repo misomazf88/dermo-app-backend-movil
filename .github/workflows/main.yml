@@ -1,9 +1,11 @@
 name: CI/CD Pipeline
 
 on:
+  push:
+    branches: [ develop ]
   pull_request:
-  # for dependabot, see: https://github.com/dependabot/dependabot-core/issues/3253#issuecomment-841656411
-  pull_request_target:
+    branches: [ develop ]
+  workflow_dispatch:
 
 jobs:
   build:
