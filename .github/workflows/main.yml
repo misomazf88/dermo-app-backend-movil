@@ -12,11 +12,8 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v2
         
-      - name: Change wrapper permissions
-        run: chmod +x ./gradlew
-
       - name: Run tests
-        run: ./gradlew test
+        run: bash ./gradlew test
         env:
           DATABASE_HOST: localhost:5432
           DATABASE_NAME: dermo-diagnostic-db
@@ -74,7 +71,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN_CI }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonarqube --info
+        run: bash ./gradlew build sonarqube --info
 
       - name: Validar resultado error
         if: ${{ failure() }}
