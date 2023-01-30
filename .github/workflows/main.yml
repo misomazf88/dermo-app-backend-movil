@@ -40,7 +40,7 @@ jobs:
             ${{ runner.os }}-gradle-
             
       - name: Make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x ./gradlew.bat
 
       - name: Build & Test with Code Coverage
         run: ./gradlew.bat clean build jacocoTestReport
