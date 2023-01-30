@@ -6,10 +6,9 @@ on:
     branches: [ feature/IniciarSesion ]
   workflow_dispatch:
 jobs:    
-   quality-gate:
+   sonarqube:
     runs-on: ubuntu-latest
     steps:
-    
     - uses: actions/checkout@v2
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting.
@@ -17,20 +16,20 @@ jobs:
 
     # Triggering SonarQube analysis as results of it are required by Quality Gate check.
     - name: SonarQube Scan
-      uses: sonarsource/sonarqube-scan-action@761bb12fed0cb89f0a280619d737e69962c44543
+      uses: sonarsource/sonarqube-scan-action@master
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: https://sonarcloud.io/project/branches_list?id=misomazf88_dermo-app-backend-movil
+        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
     # Check the Quality Gate status.
     - name: SonarQube Quality Gate check
       id: sonarqube-quality-gate-check
-      uses: sonarsource/sonarqube-quality-gate-action@761bb12fed0cb89f0a280619d737e69962c44543
+      uses: sonarsource/sonarqube-quality-gate-action@master
       # Force to fail step after specific time.
       timeout-minutes: 5
       env:
        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-       SONAR_HOST_URL: https://sonarcloud.io/project/branches_list?id=misomazf88_dermo-app-backend-movil
+       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
 
     # Optionally you can use the output from the Quality Gate in another step.
     # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
