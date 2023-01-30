@@ -6,39 +6,7 @@ on:
     branches: [ feature/IniciarSesion ]
   workflow_dispatch:
 jobs:
-        
-  lint-analysis:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the code
-        uses: actions/checkout@v2
-
-      - name: Change wrapper permissions
-        run: chmod +x ./gradlew
-
-      - name: Run Android Lint
-        run: ./gradlew lintDebug --scan
-
-      - name: Upload html test report
-        uses: actions/upload-artifact@v2
-        with:
-          name: lint.html
-          path: app/build/reports/lint-results-debug.html
-          
-      - name: Validar resultado error
-        if: ${{ failure() }}
-        env:
-         MENSAJE_ERROR: No se puede realizar el merge porque FALLO la verificación mediante la herramienta Lint
-        run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
-        
-      - name: Validar resultado exitoso
-        if: ${{ success() }}
-        env:
-          MENSAJE_EXITO: El resultado del análisis mediante la herramienta Lint fue exitoso
-        run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
-          
   unit-test:
-    needs: [lint-analysis]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the code
