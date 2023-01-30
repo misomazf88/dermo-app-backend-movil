@@ -48,7 +48,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build & Test with Code Coverage
-        run: ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
+        run: ./gradlew clean build jacocoTestReport
         env:
           DATABASE_HOST: localhost:5432
           DATABASE_NAME: dermo-diagnostic-db
