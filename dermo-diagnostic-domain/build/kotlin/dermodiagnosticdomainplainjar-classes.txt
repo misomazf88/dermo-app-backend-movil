@@ -1,1 +1,0 @@
-C:\git\Maestria\dermo-app-backend-movil\dermo-diagnostic-domain\build\classes\kotlin\main\com\dermo\app\ammj\domain\entity\AccountEntity.class;C:\git\Maestria\dermo-app-backend-movil\dermo-diagnostic-domain\build\classes\kotlin\main\com\dermo\app\ammj\domain\repository\DiagnosticRepository.class
