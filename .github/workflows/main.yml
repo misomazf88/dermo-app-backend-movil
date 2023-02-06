@@ -1,11 +1,12 @@
 name: CI/CD Pipeline
 on:
   push:
-    branches: [ develop ]
+    branches: [ feature/iniciar-sesion ]
   pull_request:
-    branches: [ develop ]
+    branches: [ feature/iniciar-sesion ]
   workflow_dispatch:
 jobs:    
+  
   unit-test:
     runs-on: ubuntu-latest
     services:
@@ -39,12 +40,6 @@ jobs:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: millonarios10
 
-      - name: Upload test report
-        uses: actions/upload-artifact@v3
-        with:
-          name: unit_test_report
-          path: app/build/reports/tests/testDebugUnitTest/
-          
       - name: Validar resultado error
         if: ${{ failure() }}
         env:
@@ -56,7 +51,7 @@ jobs:
         env:
           MENSAJE_EXITO: El resultado de las pruebas unitarias fue exitoso
         run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
-          
+  
   static-code-analysis:
     needs: [unit-test]
     runs-on: ubuntu-latest
@@ -77,34 +72,23 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v3
-
-      - name: Change wrapper permissions
-        run: chmod +x ./gradlew
-      - name: set up JDK 11
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v1
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
           
-      - name: Cache Gradle packages
-        uses: actions/cache@v1
+      - uses: actions/checkout@v2
         with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-          
-      - name: Build and analyze
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      # Triggering SonarQube analysis as results of it are required by Quality Gate check.
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN_CI }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew build sonarqube --info
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: report-task.txt
+          path: .scannerwork/report-task.txt
+          
       - name: Validar resultado error
         if: ${{ failure() }}
         env:
@@ -117,11 +101,37 @@ jobs:
           MENSAJE_EXITO: El resultado del análisis estático fue exitoso
         run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
 
-  #auto-merge:
-    #needs: [static-code-analysis]
-    #runs-on: ubuntu-latest
-    #steps:
-      #- name: automerge
-        #uses: "pascalgn/automerge-action@v0.14.2"
-        #env:
-          #GITHUB_TOKEN: "${{ secrets.TOKEN_CI }}"
+  quality-gate-analysis:
+    needs: [static-code-analysis]
+    runs-on: ubuntu-latest
+    steps:
+    
+    - uses: actions/checkout@v3
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting.
+        fetch-depth: 0
+
+    - name: Download test report
+      uses: actions/download-artifact@v3
+      with:
+        name: report-task.txt
+        
+    - name: Test artifact dowbload
+      run: ls -R
+
+    # Check the Quality Gate status.
+    - name: SonarQube Quality Gate check
+      id: sonarqube-quality-gate-check
+      uses: sonarsource/sonarqube-quality-gate-action@master
+      with:
+        scanMetadataReportFile: ./report-task.txt
+      # Force to fail step after specific time.
+      timeout-minutes: 5
+      env:
+       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+       SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+    # Optionally you can use the output from the Quality Gate in another step.
+    # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
+    - name: "Example show SonarQube Quality Gate Status value"
+      run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"

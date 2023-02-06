@@ -23,6 +23,6 @@ class DiagnosticController(
     @PostMapping(Route.Diagnostic.ACCOUNT)
     override fun createDiagnostic(
         @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
-        @RequestBody @Valid AccountRequest: CreateAccountRequest
-    ) = accountService.createAccount(AccountRequest)
+        @RequestBody @Valid AccountReques: CreateAccountRequest
+    ) = accountService.createAccount(AccountReques)
 }
