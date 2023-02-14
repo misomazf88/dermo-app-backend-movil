@@ -1,65 +1,137 @@
 name: CI/CD Pipeline
 on:
   push:
-    branches: [ develop ]
+    branches: [ feature/crear-diagnostico ]
   pull_request:
-    branches: [ develop ]
+    branches: [ feature/crear-diagnostico ]
   workflow_dispatch:
-env:
-  applicationfolder: spring-boot-hello-world-example
-  AWS_REGION: us-east-1
-  S3BUCKET: WebappDeploymentBucket
-
-
 jobs:
-  build:
-    name: Build and Package
-    runs-on: ubuntu-20.04
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v2
-        name: Checkout Repository
 
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.IAMROLE_GITHUB }}
-          role-session-name: GitHub-Action-Role
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Set up JDK 1.8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-
-      - name: chmod
-        run: chmod -R +x ./.github
-
-      - name: Build and Package Gradle
-        id: package
-        working-directory: ${{ env.applicationfolder }}
-        run: $GITHUB_WORKSPACE/.github/scripts/build.sh
-
-      - name: Upload Artifact to s3
-        working-directory: ${{ env.applicationfolder }}/target
-        run: aws s3 cp *.war s3://${{ env.S3BUCKET }}/
-
-  deploy:
-    needs: build
+  unit-test:
     runs-on: ubuntu-latest
-    environment: Dev
-    permissions:
-      id-token: write
-      contents: read
+    services:
+      postgres:
+        image: postgres:13.7
+        env:
+          POSTGRES_HOST: localhost:5432
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: millonarios10
+          POSTGRES_DB: dermo-diagnostic-db
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 2s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run tests
+        run: ./gradlew clean test
+        env:
+          POSTGRES_HOST: localhost:5432
+          POSTGRES_DB: dermo-diagnostic-db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: millonarios10
+
+      - name: Validar resultado error
+        if: ${{ failure() }}
+        env:
+          MENSAJE_ERROR: No se puede realizar el merge porque FALLO una o más pruebas unitarias
+        run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
+
+      - name: Validar resultado exitoso
+        if: ${{ success() }}
+        env:
+          MENSAJE_EXITO: El resultado de las pruebas unitarias fue exitoso
+        run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
+
+  static-code-analysis:
+    needs: [unit-test]
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13.7
+        env:
+          POSTGRES_HOST: localhost:5432
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: millonarios10
+          POSTGRES_DB: dermo-diagnostic-db
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 2s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+
       - uses: actions/checkout@v2
-      - uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.IAMROLE_GITHUB }}
-          role-session-name: GitHub-Action-Role
-          aws-region: ${{ env.AWS_REGION }}
-      - run: |
-          echo "Deploying branch ${{ env.GITHUB_REF }} to ${{ github.event.inputs.environment }}"
-          commit_hash=`git rev-parse HEAD`
-          aws deploy create-deployment --application-name CodeDeployAppNameWithASG --deployment-group-name CodeDeployGroupName --github-location repository=$GITHUB_REPOSITORY,commitId=$commit_hash --ignore-application-stop-failures
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      # Triggering SonarQube analysis as results of it are required by Quality Gate check.
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v3
+        with:
+          name: report-task.txt
+          path: .scannerwork/report-task.txt
+
+      - name: Validar resultado error
+        if: ${{ failure() }}
+        env:
+          MENSAJE_ERROR: No se puede realizar el merge porque FALLO la revisión de código estático
+        run: echo "::set-output name=respuesta::${MENSAJE_ERROR}"
+
+      - name: Validar resultado exitoso
+        if: ${{ success() }}
+        env:
+          MENSAJE_EXITO: El resultado del análisis estático fue exitoso
+        run: echo "::set-output name=respuesta::${MENSAJE_EXITO}"
+
+  quality-gate-analysis:
+    needs: [static-code-analysis]
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v3
+        with:
+          # Disabling shallow clone is recommended for improving relevancy of reporting.
+          fetch-depth: 0
+
+      - name: Download test report
+        uses: actions/download-artifact@v3
+        with:
+          name: report-task.txt
+
+      - name: Test artifact dowbload
+        run: ls -R
+
+      # Check the Quality Gate status.
+      - name: SonarQube Quality Gate check
+        id: sonarqube-quality-gate-check
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        with:
+          scanMetadataReportFile: ./report-task.txt
+        # Force to fail step after specific time.
+        timeout-minutes: 5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      # Optionally you can use the output from the Quality Gate in another step.
+      # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
+      - name: "Example show SonarQube Quality Gate Status value"
+        run: echo "The Quality Gate status is ${{ steps.sonarqube-quality-gate-check.outputs.quality-gate-status }}"
