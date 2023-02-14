@@ -17,7 +17,7 @@ services:
     command: >
       ./gradlew --no-daemon
       -g ./.gradle-cache
-      -Dspring.datasource.url=jdbc:postgresql://postgres:5432/dermo-diagnostic-db
+      -Dspring.datasource.url=jdbc:postgresql://postgres:5432/dermoapp
       -Dspring.redis.host=redis
       clean test ktlintCheck jacocoTestReport
   redis:
@@ -25,6 +25,6 @@ services:
   postgres:
     image: postgres:13.7
     environment:
-      POSTGRES_DB: 'dermo-diagnostic-db'
+      POSTGRES_DB: 'dermoapp'
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
