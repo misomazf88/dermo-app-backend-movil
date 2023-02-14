@@ -10,7 +10,7 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "account")
+@Table(schema = "dermoapp_patient", name = "account")
 data class AccountEntity(
 
     @Id
