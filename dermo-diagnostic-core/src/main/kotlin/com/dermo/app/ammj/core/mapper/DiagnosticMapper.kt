@@ -3,6 +3,8 @@ package com.dermo.app.ammj.core.mapper
 import com.dermo.app.ammj.common.request.CreateAccountRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.domain.entity.AccountEntity
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import java.util.UUID
 
 object DiagnosticMapper {
@@ -15,24 +17,44 @@ object DiagnosticMapper {
         )
 
     fun createAccountResponse(entity: AccountEntity) =
-        CreateAccountResponse(
-            description = "Cuenta creada exitosamente",
-            createdAt = entity.createdAt!!
+        ResponseEntity(
+            CreateAccountResponse(
+                description = "Cuenta creada exitosamente",
+                createdAt = entity.createdAt!!
+            ),
+            HttpStatus.CREATED
         )
 
     fun loginResponse(entity: AccountEntity) =
-        CreateAccountResponse(
-            description = "Inicio de sesion exitoso",
-            createdAt = entity.createdAt!!
+        ResponseEntity(
+            CreateAccountResponse(
+                description = "Inicio de sesion exitoso",
+                createdAt = entity.createdAt!!
+            ),
+            HttpStatus.OK
+        )
+
+    fun loginPasswordErrorResponse() =
+        ResponseEntity(
+            CreateAccountResponse(
+                description = "Credenciales invalidas"
+            ),
+            HttpStatus.UNAUTHORIZED
         )
 
     fun loginErrorResponse() =
-        CreateAccountResponse(
-            description = "Inicio de sesion erroneo, verifique usuario y/o contraseña"
+        ResponseEntity(
+            CreateAccountResponse(
+                description = "La cuenta no existe"
+            ),
+            HttpStatus.NOT_FOUND
         )
 
     fun createAccountResponseCorreoExiste() =
-        CreateAccountResponse(
-            description = "El correo ingresado ya esta registrado"
+        ResponseEntity(
+            CreateAccountResponse(
+                description = "El correo ingresado ya esta registrado"
+            ),
+            HttpStatus.BAD_REQUEST
         )
 }

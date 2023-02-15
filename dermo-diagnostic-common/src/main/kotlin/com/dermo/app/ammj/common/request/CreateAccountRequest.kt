@@ -6,9 +6,9 @@ import javax.validation.constraints.NotNull
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class CreateAccountRequest(
-    @field:NotNull
+    @field:NotNull(message = "El campo correoElectronico es obligatorio")
     var correoElectronico: String,
 
-    @field:NotNull
+    @field:NotNull(message = "El campo contrasena es obligatorio")
     var contrasena: String
 )
