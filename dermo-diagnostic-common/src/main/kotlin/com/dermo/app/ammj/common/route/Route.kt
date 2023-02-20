@@ -8,10 +8,9 @@ object Route {
     const val HEALTH = "/health"
 
     object Diagnostic {
-        const val DIAGNOSTIC = "/diagnostic"
         const val ACCOUNT = "/account/create"
         const val ACCOUNT_LOGIN = "/account/login"
-        const val DIAGNOSTIC_CREATE = "/create"
+        const val DIAGNOSTIC_CREATE = "/diagnostic/create"
     }
 
     object Cache {
