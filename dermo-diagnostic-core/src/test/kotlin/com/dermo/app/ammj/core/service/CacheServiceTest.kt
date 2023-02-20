@@ -1,7 +1,7 @@
 package com.dermo.app.ammj.core.service
 
 import com.dermo.app.ammj.app.Application
-import com.dermo.app.ammj.domain.repository.DiagnosticRepository
+import com.dermo.app.ammj.domain.repository.AccountRepository
 import org.mockito.Mock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.cache.CacheManager
@@ -13,7 +13,7 @@ class CacheServiceTest {
     private lateinit var cacheManager: CacheManager
 
     @Mock
-    private lateinit var diagnosticRepository: DiagnosticRepository
+    private lateinit var diagnosticRepository: AccountRepository
 
     // @Test
     /*fun findNatureByOriginTransactionAndTypeTest() {
