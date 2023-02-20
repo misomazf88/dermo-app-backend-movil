@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS public.account (
+CREATE TABLE IF NOT EXISTS dermoapp_patient.account (
 
     id UUID NOT NULL,
 	correo_electronico varchar NOT NULL,
@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS public.account (
 	CONSTRAINT account_pk PRIMARY KEY (correo_electronico)
 );
 
-CREATE INDEX IF NOT EXISTS account_created_at_idx ON public.account (created_at);
+CREATE INDEX IF NOT EXISTS account_created_at_idx ON dermoapp_patient.account (created_at);
