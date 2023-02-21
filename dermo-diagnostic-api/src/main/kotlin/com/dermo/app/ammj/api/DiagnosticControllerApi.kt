@@ -15,8 +15,8 @@ interface DiagnosticControllerApi {
 
     fun login(
         dermoTraceabilityId: UUID,
-        correoElectronico: String,
-        contrasena: String
+        correoElectronico: String?,
+        contrasena: String?
     ): ResponseEntity<CreateAccountResponse>
 
     fun createDiagnostic(

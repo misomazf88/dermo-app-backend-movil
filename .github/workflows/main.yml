@@ -1,9 +1,9 @@
 name: CI/CD Pipeline
 on:
   push:
-    branches: [ main ]
+    branches: [ feature/crearDiagnostico ]
   pull_request:
-    branches: [ main ]
+    branches: [ feature/crearDiagnostico ]
   workflow_dispatch:
 jobs:
 
@@ -15,8 +15,8 @@ jobs:
         env:
           POSTGRES_HOST: localhost:5432
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: millonarios10
-          POSTGRES_DB: dermo-diagnostic-db
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dermoapp
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -36,9 +36,9 @@ jobs:
         run: ./gradlew clean test
         env:
           POSTGRES_HOST: localhost:5432
-          POSTGRES_DB: dermo-diagnostic-db
+          POSTGRES_DB: dermoapp
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: millonarios10
+          POSTGRES_PASSWORD: postgres
 
       - name: Validar resultado error
         if: ${{ failure() }}
@@ -61,8 +61,8 @@ jobs:
         env:
           POSTGRES_HOST: localhost:5432
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: millonarios10
-          POSTGRES_DB: dermo-diagnostic-db
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dermoapp
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready

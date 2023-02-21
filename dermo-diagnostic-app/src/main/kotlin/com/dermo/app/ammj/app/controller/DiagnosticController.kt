@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.UUID
 import javax.validation.Valid
-import javax.validation.constraints.NotNull
 
 @RestController
 @RequestMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
@@ -33,9 +32,14 @@ class DiagnosticController(
     @GetMapping(Route.Diagnostic.ACCOUNT_LOGIN)
     override fun login(
         @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
-        @RequestParam @NotNull(message = "El campo correoElectronico es obligatorio") correoElectronico: String,
-        @RequestParam @NotNull(message = "El campo contrasena es obligatorio") contrasena: String
-    ) = accountService.login(correoElectronico, contrasena)
+        @RequestParam correoElectronico: String?,
+        @RequestParam contrasena: String?
+    ) = accountService.login(
+        CreateAccountRequest(
+            correoElectronico = correoElectronico,
+            contrasena = contrasena
+        )
+    )
 
     @PostMapping(Route.Diagnostic.DIAGNOSTIC_CREATE)
     override fun createDiagnostic(
