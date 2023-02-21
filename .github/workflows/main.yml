@@ -1,9 +1,9 @@
 name: CI/CD Pipeline
 on:
   push:
-    branches: [ feature/crearDiagnostico ]
+    branches: [ main ]
   pull_request:
-    branches: [ feature/crearDiagnostico ]
+    branches: [ main ]
   workflow_dispatch:
 jobs:
 
