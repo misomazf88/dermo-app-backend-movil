@@ -8,17 +8,17 @@ import javax.validation.constraints.NotNull
 data class CreateDiagnosticRequest(
 
     @field:NotNull(message = "El campo nombre es obligatorio")
-    var nombre: String,
+    var nombre: String? = "",
 
     @field:NotNull(message = "El campo edad es obligatorio")
-    var edad: String,
+    var edad: String? = "",
 
     @field:NotNull(message = "El campo ciudad es obligatorio")
-    var ciudad: String,
+    var ciudad: String? = "",
 
     @field:NotNull(message = "El campo tipDePiel es obligatorio")
-    var tipoDePiel: String,
+    var tipoDePiel: String? = "",
 
     @field:NotNull(message = "El campo foto es obligatorio")
-    var foto: String
+    var foto: String? = ""
 )

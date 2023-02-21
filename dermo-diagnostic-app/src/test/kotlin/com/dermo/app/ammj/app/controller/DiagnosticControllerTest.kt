@@ -2,6 +2,7 @@ package com.dermo.app.ammj.app.controller
 
 import com.dermo.app.ammj.app.utils.Generators
 import com.dermo.app.ammj.common.request.CreateAccountRequest
+import com.dermo.app.ammj.common.request.CreateDiagnosticRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.common.route.Route
 import com.dermo.app.ammj.core.service.DiagnosticService
@@ -12,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.OverrideAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
@@ -37,9 +40,11 @@ class DiagnosticControllerTest {
             contrasena = "123"
         )
 
-        val accountResponse = CreateAccountResponse(
-            description = "Cuenta creada exitosamente",
-            createdAt = Timestamp.valueOf(LocalDateTime.now())
+        val accountResponse = ResponseEntity(
+            CreateAccountResponse(
+                description = "Cuenta creada exitosamente"
+            ),
+            HttpStatus.OK
         )
 
         Mockito.doReturn(accountResponse).`when`(diagnosticService).createAccount(accountRequest)
@@ -48,8 +53,6 @@ class DiagnosticControllerTest {
 
         val jsonRequest = gson.toJson(accountRequest)
 
-        val jsonResponse = gson.toJson(accountResponse)
-
         mvc.perform(
             MockMvcRequestBuilders.post(Route.Diagnostic.ACCOUNT)
                 .headers(Generators.getAccountHeaders())
@@ -57,39 +60,7 @@ class DiagnosticControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andDo(MockMvcResultHandlers.print())
-            .andReturn()
-    }
-
-    @Test
-    fun `Crear cuenta error interno`() {
-        val accountRequest = CreateAccountRequest(
-            correoElectronico = "mazf@gmail.com",
-            contrasena = "123"
-        )
-
-        val accountResponse = CreateAccountResponse(
-            description = "Cuenta creada exitosamente",
-            createdAt = Timestamp.valueOf(LocalDateTime.now())
-        )
-
-        Mockito.doReturn(accountResponse).`when`(diagnosticService).createAccount(accountRequest)
-
-        val gson = Gson()
-
-        val jsonRequest = gson.toJson(accountRequest)
-
-        val jsonResponse = gson.toJson(accountResponse)
-
-        mvc.perform(
-            MockMvcRequestBuilders.post(Route.Diagnostic.ACCOUNT)
-                .headers(Generators.getAccountHeaders())
-                .content(jsonRequest)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
             .andDo(MockMvcResultHandlers.print())
             .andReturn()
     }
@@ -101,18 +72,12 @@ class DiagnosticControllerTest {
             contrasena = "123"
         )
 
-        val accountResponse = CreateAccountResponse(
-            description = "Cuenta creada exitosamente",
-            createdAt = Timestamp.valueOf(LocalDateTime.now())
-        )
-
         val gson = Gson()
 
         val jsonRequest = gson.toJson(accountRequest)
 
         mvc.perform(
             MockMvcRequestBuilders.post(Route.Diagnostic.ACCOUNT)
-                .headers(Generators.getAccountHeaders())
                 .content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -123,15 +88,10 @@ class DiagnosticControllerTest {
     }
 
     @Test
-    fun `Crear cuenta Bad Request`() {
+    fun `Crear cuenta Bad Request contrasena`() {
         val accountRequest = CreateAccountRequest(
             correoElectronico = "mazf@gmail.com",
-            contrasena = "123"
-        )
-
-        val accountResponse = CreateAccountResponse(
-            description = "Cuenta creada exitosamente",
-            createdAt = Timestamp.valueOf(LocalDateTime.now())
+            contrasena = ""
         )
 
         val gson = Gson()
@@ -140,7 +100,6 @@ class DiagnosticControllerTest {
 
         mvc.perform(
             MockMvcRequestBuilders.post(Route.Diagnostic.ACCOUNT)
-                .headers(Generators.getAccountHeaders())
                 .content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -150,63 +109,62 @@ class DiagnosticControllerTest {
             .andReturn()
     }
 
-    // ///
+    // Login ///
 
     @Test
-    fun `Crear diagnostico Exitosamente`() {
-        val accountRequest = CreateAccountRequest(
+    fun `Iniciar sesion Exitosamente`() {
+        var accountRequest = CreateAccountRequest(
             correoElectronico = "mazf@gmail.com",
             contrasena = "123"
         )
 
-        val accountResponse = CreateAccountResponse(
-            description = "Diagnostico creada exitosamente",
-            createdAt = Timestamp.valueOf(LocalDateTime.now())
+        val accountResponse = ResponseEntity(
+            CreateAccountResponse(
+                description = "Inicio de sesion exitoso"
+            ),
+            HttpStatus.OK
         )
 
-        Mockito.doReturn(accountResponse).`when`(diagnosticService).createAccount(accountRequest)
+        Mockito.doReturn(accountResponse).`when`(diagnosticService).login(accountRequest)
 
-        val gson = Gson()
+        var gson = Gson()
 
-        val jsonRequest = gson.toJson(accountRequest)
-
-        val jsonResponse = gson.toJson(accountResponse)
+        var jsonRequest = gson.toJson(accountRequest)
 
         mvc.perform(
-            MockMvcRequestBuilders.post(Route.Diagnostic.ACCOUNT)
+            MockMvcRequestBuilders.get(Route.Diagnostic.ACCOUNT_LOGIN)
                 .headers(Generators.getAccountHeaders())
                 .content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
             .andDo(MockMvcResultHandlers.print())
             .andReturn()
     }
 
     @Test
-    fun `Crear diagnostico error interno`() {
-        val accountRequest = CreateAccountRequest(
+    fun `Iniciar sesion bad request`() {
+        var accountRequest = CreateAccountRequest(
             correoElectronico = "mazf@gmail.com",
-            contrasena = "123"
+            contrasena = ""
         )
 
-        val accountResponse = CreateAccountResponse(
-            description = "Diagnostico creada exitosamente",
-            createdAt = Timestamp.valueOf(LocalDateTime.now())
+        val accountResponse = ResponseEntity(
+            CreateAccountResponse(
+                description = "Inicio de sesion exitoso"
+            ),
+            HttpStatus.OK
         )
 
-        Mockito.doReturn(accountResponse).`when`(diagnosticService).createAccount(accountRequest)
+        Mockito.doReturn(accountResponse).`when`(diagnosticService).login(accountRequest)
 
-        val gson = Gson()
+        var gson = Gson()
 
-        val jsonRequest = gson.toJson(accountRequest)
-
-        val jsonResponse = gson.toJson(accountResponse)
+        var jsonRequest = gson.toJson(accountRequest)
 
         mvc.perform(
-            MockMvcRequestBuilders.post(Route.Diagnostic.ACCOUNT)
-                .headers(Generators.getAccountHeaders())
+            MockMvcRequestBuilders.get(Route.Diagnostic.ACCOUNT_LOGIN)
                 .content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -216,48 +174,75 @@ class DiagnosticControllerTest {
             .andReturn()
     }
 
+    // Crear diagnostico///
+
     @Test
-    fun `Crear diagnostico Bad Request correo`() {
-        val accountRequest = CreateAccountRequest(
-            correoElectronico = "",
-            contrasena = "123"
+    fun `Crear diagnostico Exitosamente`() {
+        val createDiagnosticRequest = CreateDiagnosticRequest(
+            nombre = "Mario Zambrano",
+            edad = "25",
+            ciudad = "Bogota",
+            tipoDePiel = "Grasa",
+            foto = "/foto/piel"
         )
+
+        val accountResponse = ResponseEntity(
+            CreateAccountResponse(
+                description = "Diagnostico creado exitosamente",
+                createdAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(accountResponse).`when`(diagnosticService).createDiagnostic(createDiagnosticRequest)
 
         val gson = Gson()
 
-        val jsonRequest = gson.toJson(accountRequest)
+        val jsonRequest = gson.toJson(createDiagnosticRequest)
 
         mvc.perform(
-            MockMvcRequestBuilders.post(Route.Diagnostic.ACCOUNT)
+            MockMvcRequestBuilders.post(Route.Diagnostic.DIAGNOSTIC_CREATE)
                 .headers(Generators.getAccountHeaders())
                 .content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
             .andDo(MockMvcResultHandlers.print())
             .andReturn()
     }
 
     @Test
-    fun `Crear diagnostico Bad Request`() {
-        val accountRequest = CreateAccountRequest(
-            correoElectronico = "mazf@gmail.com",
-            contrasena = "123"
+    fun `Crear diagnostico bad request`() {
+        val createDiagnosticRequest = CreateDiagnosticRequest(
+            nombre = "Mario Zambrano",
+            edad = "25",
+            ciudad = "",
+            tipoDePiel = "",
+            foto = "/foto/piel"
         )
+
+        val accountResponse = ResponseEntity(
+            CreateAccountResponse(
+                description = "Diagnostico creado exitosamente",
+                createdAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(accountResponse).`when`(diagnosticService).createDiagnostic(createDiagnosticRequest)
 
         val gson = Gson()
 
-        val jsonRequest = gson.toJson(accountRequest)
+        val jsonRequest = gson.toJson(createDiagnosticRequest)
 
         mvc.perform(
-            MockMvcRequestBuilders.post(Route.Diagnostic.ACCOUNT)
-                .headers(Generators.getAccountHeaders())
+            MockMvcRequestBuilders.post(Route.Diagnostic.DIAGNOSTIC_CREATE)
                 .content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         )
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
             .andDo(MockMvcResultHandlers.print())
             .andReturn()
     }

@@ -29,9 +29,12 @@ class DiagnosticService(
             createAcccountRequest.correoElectronico, createAcccountRequest.contrasena
         )
 
-        if (accountRepository.findByCorreoElectronico(createAcccountRequest.correoElectronico).isPresent) {
+        if (accountRepository.findByCorreoElectronico(createAcccountRequest.correoElectronico.toString()).isPresent) {
             DiagnosticMapper.createAccountResponseCorreoExiste()
-        } else if (accountRepository.findByCorreoElectronico(createAcccountRequest.correoElectronico).isPresent && accountRepository.findByCorreoElectronico(createAcccountRequest.correoElectronico).get().contrasena.equals(createAcccountRequest.contrasena)) {
+        } else if (accountRepository.findByCorreoElectronico(createAcccountRequest.correoElectronico.toString()).isPresent && accountRepository.findByCorreoElectronico(
+                createAcccountRequest.correoElectronico.toString()
+            ).get().contrasena.equals(createAcccountRequest.contrasena)
+        ) {
             DiagnosticMapper.createAccountResponseCorreoExiste()
         } else {
             val newAccount = accountRepository.save(DiagnosticMapper.getAccountEntity(createAcccountRequest))
@@ -45,37 +48,15 @@ class DiagnosticService(
         throw ex.toUnexpectedException()
     }
 
-    @Transactional
-    fun createDiagnostic(createAcccountRequest: CreateAccountRequest): ResponseEntity<CreateAccountResponse> = try {
-        logger.info(
-            "--$APP_NAME --$CLASS:createAccount --correoElectronico[{}] --contrasena[{}]",
-            createAcccountRequest.correoElectronico, createAcccountRequest.contrasena
-        )
-
-        if (accountRepository.findByCorreoElectronico(createAcccountRequest.correoElectronico).isPresent) {
-            DiagnosticMapper.createAccountResponseCorreoExiste()
-        } else {
-            val newAccount = accountRepository.save(DiagnosticMapper.getAccountEntity(createAcccountRequest))
-
-            DiagnosticMapper.createAccountResponse(newAccount)
-        }
-    } catch (ex: Exception) {
-        logger.error(
-            "--$APP_NAME --$CLASS:create --Request[{}] --Exception:[{}]",
-            createAcccountRequest, ex.message
-        )
-        throw ex.toUnexpectedException()
-    }
-
-    fun login(correoElectronico: String, contrasena: String): ResponseEntity<CreateAccountResponse> = try {
+    fun login(createAcccountRequest: CreateAccountRequest): ResponseEntity<CreateAccountResponse> = try {
         logger.info(
             "--$APP_NAME --$CLASS:login --correoElectronico[{}] --contrasena[{}]",
-            correoElectronico, contrasena
+            createAcccountRequest.correoElectronico, createAcccountRequest.contrasena
         )
-        val accountDb = accountRepository.findByCorreoElectronico(correoElectronico)
-        if (accountDb.isPresent && accountDb.get().contrasena.equals(contrasena)) {
+        val accountDb = accountRepository.findByCorreoElectronico(createAcccountRequest.correoElectronico!!)
+        if (accountDb.isPresent && accountDb.get().contrasena.equals(createAcccountRequest.contrasena)) {
             DiagnosticMapper.loginResponse(accountDb.get())
-        } else if (accountDb.isPresent && !accountDb.get().contrasena.equals(contrasena)) {
+        } else if (accountDb.isPresent && !accountDb.get().contrasena.equals(createAcccountRequest.contrasena)) {
             DiagnosticMapper.loginPasswordErrorResponse()
         } else {
             DiagnosticMapper.loginErrorResponse()
@@ -83,7 +64,7 @@ class DiagnosticService(
     } catch (ex: Exception) {
         logger.error(
             "--$APP_NAME --$CLASS:create --Request[{}] --Exception:[{}]",
-            correoElectronico, ex.message
+            createAcccountRequest, ex.message
         )
         throw ex.toUnexpectedException()
     }
