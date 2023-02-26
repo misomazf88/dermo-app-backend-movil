@@ -177,13 +177,13 @@ class DiagnosticControllerTest {
     // Crear diagnostico///
 
     @Test
-    fun `Crear diagnostico Exitosamente`() {
+    fun `Crear PerfilUsuario Exitosamente`() {
         val userProfileRequest = UserProfileRequest(
             nombre = "Mario Zambrano",
             edad = "25",
             ciudad = "Bogota",
             tipoDePiel = "Grasa",
-            foto = "/foto/piel"
+            fotoDePiel = "/foto/piel"
         )
 
         val accountResponse = ResponseEntity(
@@ -213,13 +213,13 @@ class DiagnosticControllerTest {
     }
 
     @Test
-    fun `Crear diagnostico bad request`() {
+    fun `Crear PerfilUsuario bad request`() {
         val userProfileRequest = UserProfileRequest(
             nombre = "Mario Zambrano",
             edad = "25",
             ciudad = "",
             tipoDePiel = "",
-            foto = "/foto/piel"
+            fotoDePiel = "/foto/piel"
         )
 
         val accountResponse = ResponseEntity(
