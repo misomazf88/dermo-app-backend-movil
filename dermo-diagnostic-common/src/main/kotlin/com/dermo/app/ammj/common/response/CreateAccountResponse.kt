@@ -12,5 +12,8 @@ data class CreateAccountResponse(
     var description: String?,
 
     @field:NotNull
-    var createdAt: Timestamp? = Timestamp.valueOf(LocalDateTime.now())
+    var createdAt: Timestamp? = Timestamp.valueOf(LocalDateTime.now()),
+
+    @field:NotNull
+    var updatedAt: Timestamp? = Timestamp.valueOf(LocalDateTime.now())
 )

@@ -9,3 +9,4 @@ CREATE TABLE IF NOT EXISTS dermoapp_patient.account (
 );
 
 CREATE INDEX IF NOT EXISTS account_created_at_idx ON dermoapp_patient.account (created_at);
+CREATE INDEX IF NOT EXISTS account_correo_electronico_idx ON dermoapp_patient.account (correo_electronico);

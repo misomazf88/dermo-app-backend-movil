@@ -3,20 +3,22 @@ package com.dermo.app.ammj.core.service
 import com.dermo.app.ammj.common.environment.VisionEnvironment.Companion.APP_NAME
 import com.dermo.app.ammj.common.exception.toUnexpectedException
 import com.dermo.app.ammj.common.request.CreateAccountRequest
-import com.dermo.app.ammj.common.request.CreateDiagnosticRequest
+import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.core.mapper.DiagnosticMapper
 import com.dermo.app.ammj.domain.repository.AccountRepository
-import com.dermo.app.ammj.domain.repository.DiagnosticRepository
+import com.dermo.app.ammj.domain.repository.UserProfileRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.sql.Timestamp
+import java.time.LocalDateTime
 import javax.transaction.Transactional
 
 @Service
 class DiagnosticService(
     private val accountRepository: AccountRepository,
-    private val diagnosticRepository: DiagnosticRepository
+    private val userProfileRepository: UserProfileRepository
 ) {
 
     private var logger = LoggerFactory.getLogger(DiagnosticService::class.java)
@@ -59,7 +61,7 @@ class DiagnosticService(
         } else if (accountDb.isPresent && !accountDb.get().contrasena.equals(createAcccountRequest.contrasena)) {
             DiagnosticMapper.loginPasswordErrorResponse()
         } else {
-            DiagnosticMapper.loginErrorResponse()
+            DiagnosticMapper.accountErrorResponse()
         }
     } catch (ex: Exception) {
         logger.error(
@@ -70,17 +72,34 @@ class DiagnosticService(
     }
 
     @Transactional
-    fun createDiagnostic(createDiagnosticRequest: CreateDiagnosticRequest): ResponseEntity<CreateAccountResponse> = try {
+    fun createUserProfile(userProfileRequest: UserProfileRequest): ResponseEntity<CreateAccountResponse> = try {
         logger.info(
-            "--$APP_NAME --$CLASS:createDiagnostic --nombre[{}] --edad[{}] --ciudad[{}] --tipo de piel[{}] --imagen[{}]",
-            createDiagnosticRequest.nombre, createDiagnosticRequest.edad, createDiagnosticRequest.ciudad, createDiagnosticRequest.tipoDePiel, createDiagnosticRequest.foto
+            "--$APP_NAME --$CLASS:createUserProfile --correo electronico[{}] --nombre[{}] --edad[{}] --ciudad[{}] --tipo de piel[{}] --foto de piel[{}]",
+            userProfileRequest.correoElectronico, userProfileRequest.nombre, userProfileRequest.edad, userProfileRequest.ciudad,
+            userProfileRequest.tipoDePiel, userProfileRequest.fotoDePiel
         )
-        val newAccount = diagnosticRepository.save(DiagnosticMapper.getDiagnosticEntity(createDiagnosticRequest))
-        DiagnosticMapper.createDiagnosticResponse(newAccount)
+        val accountDb = accountRepository.findByCorreoElectronico(userProfileRequest.correoElectronico!!)
+        if (!accountDb.isPresent) {
+            DiagnosticMapper.accountErrorResponse()
+        }
+        val userProfileDb = userProfileRepository.findByCorreoElectronico(userProfileRequest.correoElectronico!!)
+        if (userProfileDb.isPresent) {
+            userProfileDb.get().nombre = userProfileRequest.nombre
+            userProfileDb.get().edad = userProfileRequest.edad
+            userProfileDb.get().ciudad = userProfileRequest.ciudad
+            userProfileDb.get().tipoDePiel = userProfileRequest.tipoDePiel
+            userProfileDb.get().fotoDePiel = userProfileRequest.fotoDePiel
+            userProfileDb.get().updatedAt = Timestamp.valueOf(LocalDateTime.now())
+            userProfileRepository.save(userProfileDb.get())
+            DiagnosticMapper.updateUserProfileResponse(userProfileDb.get())
+        } else {
+            val newProfile = userProfileRepository.save(DiagnosticMapper.getUserProfileEntity(userProfileRequest, accountDb.get()))
+            DiagnosticMapper.createUserProfileResponse(newProfile)
+        }
     } catch (ex: Exception) {
         logger.error(
-            "--$APP_NAME --$CLASS:createDiagnostic --Request[{}] --Exception:[{}]",
-            createDiagnosticRequest, ex.message
+            "--$APP_NAME --$CLASS:createUserProfile --Request[{}] --Exception:[{}]",
+            userProfileRequest, ex.message
         )
         throw ex.toUnexpectedException()
     }

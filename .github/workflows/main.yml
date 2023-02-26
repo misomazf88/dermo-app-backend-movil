@@ -77,6 +77,17 @@ jobs:
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       # Triggering SonarQube analysis as results of it are required by Quality Gate check.
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Run tests
+        run: ./gradlew clean test
+        env:
+          POSTGRES_HOST: localhost:5432
+          POSTGRES_DB: dermoapp
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
