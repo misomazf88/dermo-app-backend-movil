@@ -3,6 +3,7 @@ package com.dermo.app.ammj.app.controller
 import com.dermo.app.ammj.api.DiagnosticControllerApi
 import com.dermo.app.ammj.common.constant.Constant.Trace.DERMO_TRACEABILITY_ID
 import com.dermo.app.ammj.common.request.CreateAccountRequest
+import com.dermo.app.ammj.common.request.CreateInjuryRequest
 import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.route.Route
 import com.dermo.app.ammj.core.service.DiagnosticService
@@ -46,4 +47,10 @@ class DiagnosticController(
         @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
         @RequestBody @Valid userProfileRequest: UserProfileRequest
     ) = accountService.createUserProfile(userProfileRequest)
+
+    @PostMapping(Route.Diagnostic.INJURY_CREATE)
+    override fun createInjury(
+        @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
+        @RequestBody @Valid createInjuryRequest: CreateInjuryRequest
+    ) = accountService.createInjury(createInjuryRequest)
 }
