@@ -1,9 +1,9 @@
 name: CI/CD Pipeline
 on:
   push:
-    branches: [ main ]
+    branches: [ feature/informarLesion ]
   pull_request:
-    branches: [ main ]
+    branches: [ feature/informarLesion ]
   workflow_dispatch:
 jobs:
 
