@@ -53,4 +53,10 @@ class DiagnosticController(
         @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
         @RequestBody @Valid createInjuryRequest: CreateInjuryRequest
     ) = accountService.createInjury(createInjuryRequest)
+
+    @GetMapping(Route.Diagnostic.INJURIES)
+    override fun getAllInjuries(
+        @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
+        @RequestParam correoElectronico: String?
+    ) = accountService.getAllInjuries(correoElectronico)
 }

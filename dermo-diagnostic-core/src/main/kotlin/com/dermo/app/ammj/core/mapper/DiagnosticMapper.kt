@@ -4,12 +4,16 @@ import com.dermo.app.ammj.common.request.CreateAccountRequest
 import com.dermo.app.ammj.common.request.CreateInjuryRequest
 import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
+import com.dermo.app.ammj.common.response.GetInjuriesResponse
+import com.dermo.app.ammj.common.response.InjuryResponse
 import com.dermo.app.ammj.domain.entity.AccountEntity
 import com.dermo.app.ammj.domain.entity.InjuryEntity
 import com.dermo.app.ammj.domain.entity.UserProfileEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import java.util.Optional
 import java.util.UUID
+import kotlin.collections.ArrayList
 
 object DiagnosticMapper {
 
@@ -120,4 +124,34 @@ object DiagnosticMapper {
             distribucion = request.distribucion,
             fotoDeLesion = request.fotoDeLesion,
         )
+
+    fun getAllInjuriesEntity(request: UserProfileEntity, injuries: List<Optional<InjuryEntity>>): ResponseEntity<GetInjuriesResponse> {
+
+        var injuriesList = ArrayList<InjuryResponse>()
+
+        injuries.forEach {
+            var injury = InjuryResponse(
+                tipoDeLesion = it.get().tipoDeLesion,
+                formaDeLesion = it.get().formaDeLesion,
+                numeroDeLesiones = it.get().numeroDeLesiones,
+                distribucion = it.get().distribucion,
+                fotoDeLesion = it.get().fotoDeLesion,
+                createdAt = it.get().createdAt,
+                updatedAt = it.get().updatedAt,
+            )
+            injuriesList.add(injury)
+        }
+
+        var getInjuriesResponse = GetInjuriesResponse(
+            correoElectronico = request.correoElectronico,
+            nombre = request.nombre,
+            edad = request.edad,
+            ciudad = request.ciudad,
+            tipoDePiel = request.tipoDePiel,
+            fotoDePiel = request.fotoDePiel,
+            lesiones = injuriesList,
+            description = "Lesiones registradas a la fecha"
+        )
+        return ResponseEntity(getInjuriesResponse, HttpStatus.OK)
+    }
 }

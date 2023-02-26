@@ -6,6 +6,7 @@ import com.dermo.app.ammj.common.request.CreateAccountRequest
 import com.dermo.app.ammj.common.request.CreateInjuryRequest
 import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
+import com.dermo.app.ammj.common.response.GetInjuriesResponse
 import com.dermo.app.ammj.core.mapper.DiagnosticMapper
 import com.dermo.app.ammj.domain.repository.AccountRepository
 import com.dermo.app.ammj.domain.repository.InjuryRepository
@@ -128,6 +129,24 @@ class DiagnosticService(
         logger.error(
             "--$APP_NAME --$CLASS:createInjury --Request[{}] --Exception:[{}]",
             createInjuryRequest, ex.message
+        )
+        throw ex.toUnexpectedException()
+    }
+
+    fun getAllInjuries(correoElectronico: String?): ResponseEntity<GetInjuriesResponse> = try {
+        val profileDb = correoElectronico?.let { userProfileRepository.findByCorreoElectronico(it) }
+
+        if (!profileDb!!.isPresent) {
+            DiagnosticMapper.profileErrorResponse()
+        }
+
+        val injuries = injuryRepository.findByCorreoElectronico(correoElectronico)
+
+        DiagnosticMapper.getAllInjuriesEntity(profileDb.get(), injuries)
+    } catch (ex: Exception) {
+        logger.error(
+            "--$APP_NAME --$CLASS:getAllInjuries --correo[{}] --Exception:[{}]",
+            correoElectronico, ex.message
         )
         throw ex.toUnexpectedException()
     }

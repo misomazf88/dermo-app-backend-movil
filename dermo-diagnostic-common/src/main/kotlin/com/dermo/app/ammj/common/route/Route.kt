@@ -11,7 +11,7 @@ object Route {
         const val ACCOUNT = "/account/create"
         const val ACCOUNT_LOGIN = "/account/login"
         const val INJURY_CREATE = "/injury/create"
-        const val INJURIES = "/injuries/getall"
+        const val INJURIES = "/injury/getall"
         const val USER_PROFILE_CREATE = "/user/profile/create"
     }
 
