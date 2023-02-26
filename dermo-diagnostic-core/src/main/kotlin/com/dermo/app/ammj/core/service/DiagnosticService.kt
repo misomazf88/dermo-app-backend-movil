@@ -3,10 +3,12 @@ package com.dermo.app.ammj.core.service
 import com.dermo.app.ammj.common.environment.VisionEnvironment.Companion.APP_NAME
 import com.dermo.app.ammj.common.exception.toUnexpectedException
 import com.dermo.app.ammj.common.request.CreateAccountRequest
+import com.dermo.app.ammj.common.request.CreateInjuryRequest
 import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.core.mapper.DiagnosticMapper
 import com.dermo.app.ammj.domain.repository.AccountRepository
+import com.dermo.app.ammj.domain.repository.InjuryRepository
 import com.dermo.app.ammj.domain.repository.UserProfileRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -18,7 +20,8 @@ import javax.transaction.Transactional
 @Service
 class DiagnosticService(
     private val accountRepository: AccountRepository,
-    private val userProfileRepository: UserProfileRepository
+    private val userProfileRepository: UserProfileRepository,
+    private val injuryRepository: InjuryRepository
 ) {
 
     private var logger = LoggerFactory.getLogger(DiagnosticService::class.java)
@@ -100,6 +103,31 @@ class DiagnosticService(
         logger.error(
             "--$APP_NAME --$CLASS:createUserProfile --Request[{}] --Exception:[{}]",
             userProfileRequest, ex.message
+        )
+        throw ex.toUnexpectedException()
+    }
+
+    fun createInjury(createInjuryRequest: CreateInjuryRequest): ResponseEntity<CreateAccountResponse> = try {
+        logger.info(
+            "--$APP_NAME --$CLASS:createInjury --correo electronico[{}] --tipo de lesion[{}] --forma de lesion[{}] --numero de lesiones[{}] --distribucion[{}] --foto de lesion[{}]",
+            createInjuryRequest.correoElectronico, createInjuryRequest.tipoDeLesion, createInjuryRequest.formaDeLesion, createInjuryRequest.numeroDeLesiones,
+            createInjuryRequest.distribucion, createInjuryRequest.fotoDeLesion
+        )
+        val accountDb = accountRepository.findByCorreoElectronico(createInjuryRequest.correoElectronico!!)
+        val profileDb = userProfileRepository.findByCorreoElectronico(createInjuryRequest.correoElectronico!!)
+
+        if (!accountDb.isPresent) {
+            DiagnosticMapper.accountErrorResponse()
+        } else if (!profileDb.isPresent) {
+            DiagnosticMapper.profileErrorResponse()
+        } else {
+            val newInjury = injuryRepository.save(DiagnosticMapper.getInjuryEntity(createInjuryRequest))
+            DiagnosticMapper.createInjuryResponse(newInjury)
+        }
+    } catch (ex: Exception) {
+        logger.error(
+            "--$APP_NAME --$CLASS:createInjury --Request[{}] --Exception:[{}]",
+            createInjuryRequest, ex.message
         )
         throw ex.toUnexpectedException()
     }

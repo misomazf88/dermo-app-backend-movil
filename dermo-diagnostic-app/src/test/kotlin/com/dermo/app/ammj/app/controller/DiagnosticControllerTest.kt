@@ -2,6 +2,7 @@ package com.dermo.app.ammj.app.controller
 
 import com.dermo.app.ammj.app.utils.Generators
 import com.dermo.app.ammj.common.request.CreateAccountRequest
+import com.dermo.app.ammj.common.request.CreateInjuryRequest
 import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.common.route.Route
@@ -174,7 +175,7 @@ class DiagnosticControllerTest {
             .andReturn()
     }
 
-    // Crear diagnostico///
+    // Crear perfil dermatologico///
 
     @Test
     fun `Crear perfilUsuario Exitosamente`() {
@@ -239,6 +240,81 @@ class DiagnosticControllerTest {
 
         mvc.perform(
             MockMvcRequestBuilders.post(Route.Diagnostic.USER_PROFILE_CREATE)
+                .content(jsonRequest)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn()
+    }
+
+    // Informar lesion///
+
+    @Test
+    fun `Informar lesion Exitosamente`() {
+        val createInjuryRequest = CreateInjuryRequest(
+            correoElectronico = "mazf123@gmail.com",
+            tipoDeLesion = "Placa",
+            formaDeLesion = "Ovalada",
+            numeroDeLesiones = "Multiple",
+            distribucion = "Esparcida",
+            fotoDeLesion = "base64/foto"
+        )
+
+        val accountResponse = ResponseEntity(
+            CreateAccountResponse(
+                description = "Lesion creada exitosamente",
+                createdAt = Timestamp.valueOf(LocalDateTime.now()),
+                updatedAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(accountResponse).`when`(diagnosticService).createInjury(createInjuryRequest)
+
+        val gson = Gson()
+
+        val jsonRequest = gson.toJson(createInjuryRequest)
+
+        mvc.perform(
+            MockMvcRequestBuilders.post(Route.Diagnostic.INJURY_CREATE)
+                .headers(Generators.getAccountHeaders())
+                .content(jsonRequest)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn()
+    }
+
+    @Test
+    fun `Informar lesion bad request`() {
+        val createInjuryRequest = CreateInjuryRequest(
+            tipoDeLesion = "Placa",
+            formaDeLesion = "Ovalada",
+            numeroDeLesiones = "Multiple",
+            distribucion = "Esparcida",
+            fotoDeLesion = "base64/foto"
+        )
+
+        val accountResponse = ResponseEntity(
+            CreateAccountResponse(
+                description = "Diagnostico creado exitosamente",
+                createdAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(accountResponse).`when`(diagnosticService).createInjury(createInjuryRequest)
+
+        val gson = Gson()
+
+        val jsonRequest = gson.toJson(createInjuryRequest)
+
+        mvc.perform(
+            MockMvcRequestBuilders.post(Route.Diagnostic.INJURY_CREATE)
                 .content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)

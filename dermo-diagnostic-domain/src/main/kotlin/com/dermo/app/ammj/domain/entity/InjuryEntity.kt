@@ -10,8 +10,8 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(schema = "dermoapp_patient", name = "user_profile")
-data class UserProfileEntity(
+@Table(schema = "dermoapp_patient", name = "injury")
+data class InjuryEntity(
 
     @Id
     var id: UUID? = null,
@@ -20,19 +20,19 @@ data class UserProfileEntity(
     var correoElectronico: String? = null,
 
     @Column
-    var nombre: String? = null,
+    var tipoDeLesion: String? = null,
 
     @Column
-    var edad: String? = null,
+    var formaDeLesion: String? = null,
 
     @Column
-    var ciudad: String? = null,
+    var numeroDeLesiones: String? = null,
 
     @Column
-    var tipoDePiel: String? = null,
+    var distribucion: String? = null,
 
     @Column
-    var fotoDePiel: String? = null,
+    var fotoDeLesion: String? = null,
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "YYYY-MM-DD HH:MM:SS.SSS")
     var createdAt: Timestamp? = Timestamp.valueOf(LocalDateTime.now()),

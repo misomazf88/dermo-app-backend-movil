@@ -7,11 +7,6 @@ CREATE TABLE IF NOT EXISTS dermoapp_patient.user_profile (
 	ciudad varchar NOT NULL,
 	tipo_de_piel varchar NOT NULL,
 	foto_de_piel varchar NOT NULL,
-    tipo_de_lesion varchar,
-    forma_de_lesion varchar,
-    numero_de_lesiones varchar,
-    distribucion varchar,
-    foto_de_lesion varchar,
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL,
 
