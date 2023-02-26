@@ -177,8 +177,9 @@ class DiagnosticControllerTest {
     // Crear diagnostico///
 
     @Test
-    fun `Crear PerfilUsuario Exitosamente`() {
+    fun `Crear perfilUsuario Exitosamente`() {
         val userProfileRequest = UserProfileRequest(
+            correoElectronico = "mazf123@gmail.com",
             nombre = "Mario Zambrano",
             edad = "25",
             ciudad = "Bogota",
@@ -201,7 +202,7 @@ class DiagnosticControllerTest {
         val jsonRequest = gson.toJson(userProfileRequest)
 
         mvc.perform(
-            MockMvcRequestBuilders.post(Route.Diagnostic.DIAGNOSTIC_CREATE)
+            MockMvcRequestBuilders.post(Route.Diagnostic.USER_PROFILE_CREATE)
                 .headers(Generators.getAccountHeaders())
                 .content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -213,7 +214,7 @@ class DiagnosticControllerTest {
     }
 
     @Test
-    fun `Crear PerfilUsuario bad request`() {
+    fun `Crear perfilUsuario bad request`() {
         val userProfileRequest = UserProfileRequest(
             nombre = "Mario Zambrano",
             edad = "25",
@@ -237,7 +238,7 @@ class DiagnosticControllerTest {
         val jsonRequest = gson.toJson(userProfileRequest)
 
         mvc.perform(
-            MockMvcRequestBuilders.post(Route.Diagnostic.DIAGNOSTIC_CREATE)
+            MockMvcRequestBuilders.post(Route.Diagnostic.USER_PROFILE_CREATE)
                 .content(jsonRequest)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
