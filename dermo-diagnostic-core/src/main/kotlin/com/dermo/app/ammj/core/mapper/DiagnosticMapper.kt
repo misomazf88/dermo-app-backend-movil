@@ -1,10 +1,10 @@
 package com.dermo.app.ammj.core.mapper
 
 import com.dermo.app.ammj.common.request.CreateAccountRequest
-import com.dermo.app.ammj.common.request.CreateDiagnosticRequest
+import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.domain.entity.AccountEntity
-import com.dermo.app.ammj.domain.entity.DiagnosticEntity
+import com.dermo.app.ammj.domain.entity.UserProfileEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import java.util.UUID
@@ -27,10 +27,19 @@ object DiagnosticMapper {
             HttpStatus.CREATED
         )
 
-    fun createDiagnosticResponse(entity: DiagnosticEntity) =
+    fun createUserProfileResponse(entity: UserProfileEntity) =
         ResponseEntity(
             CreateAccountResponse(
-                description = "Diagnostico creado exitosamente",
+                description = "Perfil creado exitosamente",
+                createdAt = entity.createdAt!!
+            ),
+            HttpStatus.CREATED
+        )
+
+    fun updateUserProfileResponse(entity: UserProfileEntity) =
+        ResponseEntity(
+            CreateAccountResponse(
+                description = "Perfil actualizado exitosamente",
                 createdAt = entity.createdAt!!
             ),
             HttpStatus.CREATED
@@ -53,7 +62,7 @@ object DiagnosticMapper {
             HttpStatus.UNAUTHORIZED
         )
 
-    fun loginErrorResponse() =
+    fun accountErrorResponse() =
         ResponseEntity(
             CreateAccountResponse(
                 description = "La cuenta no existe"
@@ -69,13 +78,14 @@ object DiagnosticMapper {
             HttpStatus.BAD_REQUEST
         )
 
-    fun getDiagnosticEntity(request: CreateDiagnosticRequest) =
-        DiagnosticEntity(
-            id = UUID.randomUUID(),
+    fun getUserProfileEntity(request: UserProfileRequest, accountEntity: AccountEntity) =
+        UserProfileEntity(
+            id = accountEntity.id,
+            correoElectronico = request.correoElectronico,
             nombre = request.nombre,
             edad = request.edad,
             ciudad = request.ciudad,
             tipoDePiel = request.tipoDePiel,
-            foto = request.foto,
+            fotoDePiel = request.fotoDePiel,
         )
 }
