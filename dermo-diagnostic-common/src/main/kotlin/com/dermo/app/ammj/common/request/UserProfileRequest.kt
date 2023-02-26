@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 import javax.validation.constraints.NotNull
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-data class CreateDiagnosticRequest(
+data class UserProfileRequest(
+
+    @field:NotNull(message = "El campo correoElectronico es obligatorio")
+    var correoElectronico: String? = "",
 
     @field:NotNull(message = "El campo nombre es obligatorio")
     var nombre: String? = "",
@@ -20,5 +23,5 @@ data class CreateDiagnosticRequest(
     var tipoDePiel: String? = "",
 
     @field:NotNull(message = "El campo foto es obligatorio")
-    var foto: String? = ""
+    var fotoDePiel: String? = ""
 )

@@ -2,7 +2,7 @@ package com.dermo.app.ammj.app.controller
 
 import com.dermo.app.ammj.app.utils.Generators
 import com.dermo.app.ammj.common.request.CreateAccountRequest
-import com.dermo.app.ammj.common.request.CreateDiagnosticRequest
+import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.common.route.Route
 import com.dermo.app.ammj.core.service.DiagnosticService
@@ -178,7 +178,7 @@ class DiagnosticControllerTest {
 
     @Test
     fun `Crear diagnostico Exitosamente`() {
-        val createDiagnosticRequest = CreateDiagnosticRequest(
+        val userProfileRequest = UserProfileRequest(
             nombre = "Mario Zambrano",
             edad = "25",
             ciudad = "Bogota",
@@ -194,11 +194,11 @@ class DiagnosticControllerTest {
             HttpStatus.OK
         )
 
-        Mockito.doReturn(accountResponse).`when`(diagnosticService).createDiagnostic(createDiagnosticRequest)
+        Mockito.doReturn(accountResponse).`when`(diagnosticService).createUserProfile(userProfileRequest)
 
         val gson = Gson()
 
-        val jsonRequest = gson.toJson(createDiagnosticRequest)
+        val jsonRequest = gson.toJson(userProfileRequest)
 
         mvc.perform(
             MockMvcRequestBuilders.post(Route.Diagnostic.DIAGNOSTIC_CREATE)
@@ -214,7 +214,7 @@ class DiagnosticControllerTest {
 
     @Test
     fun `Crear diagnostico bad request`() {
-        val createDiagnosticRequest = CreateDiagnosticRequest(
+        val userProfileRequest = UserProfileRequest(
             nombre = "Mario Zambrano",
             edad = "25",
             ciudad = "",
@@ -230,11 +230,11 @@ class DiagnosticControllerTest {
             HttpStatus.OK
         )
 
-        Mockito.doReturn(accountResponse).`when`(diagnosticService).createDiagnostic(createDiagnosticRequest)
+        Mockito.doReturn(accountResponse).`when`(diagnosticService).createUserProfile(userProfileRequest)
 
         val gson = Gson()
 
-        val jsonRequest = gson.toJson(createDiagnosticRequest)
+        val jsonRequest = gson.toJson(userProfileRequest)
 
         mvc.perform(
             MockMvcRequestBuilders.post(Route.Diagnostic.DIAGNOSTIC_CREATE)
