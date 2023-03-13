@@ -4,6 +4,8 @@ import com.dermo.app.ammj.common.request.CreateAccountRequest
 import com.dermo.app.ammj.common.request.CreateInjuryRequest
 import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
+import com.dermo.app.ammj.common.response.GetInjuriesResponse
+import com.dermo.app.ammj.common.response.GetUsersResponse
 import org.springframework.http.ResponseEntity
 import java.util.UUID
 
@@ -20,7 +22,7 @@ interface DiagnosticControllerApi {
         contrasena: String?
     ): ResponseEntity<CreateAccountResponse>
 
-    fun createDiagnostic(
+    fun createUserProfile(
         dermoTraceabilityId: UUID,
         createAccountRequest: UserProfileRequest
     ): ResponseEntity<CreateAccountResponse>
@@ -29,4 +31,17 @@ interface DiagnosticControllerApi {
         dermoTraceabilityId: UUID,
         createInjuryRequest: CreateInjuryRequest
     ): ResponseEntity<CreateAccountResponse>
+
+    fun getAllInjuries(
+        dermoTraceabilityId: UUID,
+        correoElectronico: String?
+    ): ResponseEntity<GetInjuriesResponse>
+
+    fun getAllInjuries(
+        dermoTraceabilityId: UUID
+    ): ResponseEntity<GetInjuriesResponse>
+
+    fun getAllUsers(
+        dermoTraceabilityId: UUID
+    ): ResponseEntity<GetUsersResponse>
 }

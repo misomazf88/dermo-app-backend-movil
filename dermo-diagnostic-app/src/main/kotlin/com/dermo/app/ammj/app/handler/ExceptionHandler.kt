@@ -29,7 +29,11 @@ class ExceptionHandler {
     fun handleDiagnosticException(ex: DiagnosticException): ResponseEntity<ErrorResponse> {
         val errorResponse = ErrorResponse(
             status = ex.status,
-            message = ex.errorCode
+            message = if (!ex.message.isNullOrEmpty()) {
+                ex.message!!
+            } else {
+                ex.errorCode
+            }
         )
         logger.error(
             "--{} --ExceptionHandler:handleDiagnosticException --status: [{}] --message: [{}]",
