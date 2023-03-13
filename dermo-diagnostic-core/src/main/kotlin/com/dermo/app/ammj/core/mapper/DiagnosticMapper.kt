@@ -5,7 +5,9 @@ import com.dermo.app.ammj.common.request.CreateInjuryRequest
 import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.common.response.GetInjuriesResponse
+import com.dermo.app.ammj.common.response.GetUsersResponse
 import com.dermo.app.ammj.common.response.InjuryResponse
+import com.dermo.app.ammj.common.response.Users
 import com.dermo.app.ammj.domain.entity.AccountEntity
 import com.dermo.app.ammj.domain.entity.InjuryEntity
 import com.dermo.app.ammj.domain.entity.UserProfileEntity
@@ -125,12 +127,13 @@ object DiagnosticMapper {
             fotoDeLesion = request.fotoDeLesion,
         )
 
-    fun getAllInjuriesEntity(request: UserProfileEntity, injuries: List<Optional<InjuryEntity>>): ResponseEntity<GetInjuriesResponse> {
+    fun getAllInjuriesEntity(request: UserProfileEntity, injuries: List<Optional<InjuryEntity>>): GetInjuriesResponse {
 
         var injuriesList = ArrayList<InjuryResponse>()
 
         injuries.forEach {
             var injury = InjuryResponse(
+                id = it.get().id.toString(),
                 tipoDeLesion = it.get().tipoDeLesion,
                 formaDeLesion = it.get().formaDeLesion,
                 numeroDeLesiones = it.get().numeroDeLesiones,
@@ -152,6 +155,55 @@ object DiagnosticMapper {
             lesiones = injuriesList,
             description = "Lesiones registradas a la fecha"
         )
-        return ResponseEntity(getInjuriesResponse, HttpStatus.OK)
+        return getInjuriesResponse
+    }
+
+    fun getAllInjuriesEntity(injuries: MutableList<InjuryEntity>): GetInjuriesResponse {
+
+        var injuriesList = ArrayList<InjuryResponse>()
+
+        injuries.forEach {
+            var injury = InjuryResponse(
+                id = it.id.toString(),
+                tipoDeLesion = it.tipoDeLesion,
+                formaDeLesion = it.formaDeLesion,
+                numeroDeLesiones = it.numeroDeLesiones,
+                distribucion = it.distribucion,
+                fotoDeLesion = it.fotoDeLesion,
+                correoElectronico = it.correoElectronico,
+                createdAt = it.createdAt,
+                updatedAt = it.updatedAt
+            )
+            injuriesList.add(injury)
+        }
+
+        var getInjuriesResponse = GetInjuriesResponse(
+            lesiones = injuriesList,
+            description = "Lesiones registradas a la fecha"
+        )
+        return getInjuriesResponse
+    }
+
+    fun getAllUsersEntity(users: MutableList<UserProfileEntity>): GetUsersResponse {
+
+        var usersList = ArrayList<Users>()
+
+        users.forEach {
+            var user = Users(
+                id = it.id.toString(),
+                correoElectronico = it.correoElectronico,
+                nombre = it.nombre,
+                edad = it.edad,
+                ciudad = it.ciudad,
+                createdAt = it.createdAt,
+            )
+            usersList.add(user)
+        }
+
+        var getInjuriesResponse = GetUsersResponse(
+            usuarios = usersList,
+            descripcion = "Usuarios registrados a la fecha"
+        )
+        return getInjuriesResponse
     }
 }

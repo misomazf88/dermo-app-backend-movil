@@ -8,6 +8,7 @@ import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.route.Route
 import com.dermo.app.ammj.core.service.DiagnosticService
 import org.springframework.http.MediaType
+import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -20,6 +21,7 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping(produces = [(MediaType.APPLICATION_JSON_VALUE)])
+@CrossOrigin(origins = ["*"])
 class DiagnosticController(
     private val accountService: DiagnosticService
 ) : DiagnosticControllerApi {
@@ -43,7 +45,7 @@ class DiagnosticController(
     )
 
     @PostMapping(Route.Diagnostic.USER_PROFILE_CREATE)
-    override fun createDiagnostic(
+    override fun createUserProfile(
         @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
         @RequestBody @Valid userProfileRequest: UserProfileRequest
     ) = accountService.createUserProfile(userProfileRequest)
@@ -59,4 +61,14 @@ class DiagnosticController(
         @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
         @RequestParam correoElectronico: String?
     ) = accountService.getAllInjuries(correoElectronico)
+
+    @GetMapping(Route.Diagnostic.INJURIES_ALL)
+    override fun getAllInjuries(
+        @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
+    ) = accountService.getAllInjuries()
+
+    @GetMapping(Route.Diagnostic.USER_PROFILE_GET_ALL)
+    override fun getAllUsers(
+        @RequestHeader(DERMO_TRACEABILITY_ID) dermoTraceabilityId: UUID,
+    ) = accountService.getAllUsers()
 }

@@ -8,6 +8,8 @@ import java.time.LocalDateTime
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class InjuryResponse(
 
+    var id: String? = "",
+
     var tipoDeLesion: String? = "",
 
     var formaDeLesion: String? = "",
@@ -17,6 +19,8 @@ data class InjuryResponse(
     var distribucion: String? = "",
 
     var fotoDeLesion: String? = "",
+
+    var correoElectronico: String? = "",
 
     var createdAt: Timestamp? = Timestamp.valueOf(LocalDateTime.now()),
 

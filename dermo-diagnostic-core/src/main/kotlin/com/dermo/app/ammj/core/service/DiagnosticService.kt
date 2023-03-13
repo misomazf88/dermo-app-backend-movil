@@ -7,11 +7,14 @@ import com.dermo.app.ammj.common.request.CreateInjuryRequest
 import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
 import com.dermo.app.ammj.common.response.GetInjuriesResponse
+import com.dermo.app.ammj.common.response.GetUsersResponse
 import com.dermo.app.ammj.core.mapper.DiagnosticMapper
 import com.dermo.app.ammj.domain.repository.AccountRepository
 import com.dermo.app.ammj.domain.repository.InjuryRepository
 import com.dermo.app.ammj.domain.repository.UserProfileRepository
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
@@ -142,11 +145,41 @@ class DiagnosticService(
 
         val injuries = injuryRepository.findByCorreoElectronico(correoElectronico)
 
-        DiagnosticMapper.getAllInjuriesEntity(profileDb.get(), injuries)
+        val responseHeaders = HttpHeaders()
+
+        ResponseEntity<GetInjuriesResponse>(DiagnosticMapper.getAllInjuriesEntity(profileDb.get(), injuries), responseHeaders, HttpStatus.OK)
     } catch (ex: Exception) {
         logger.error(
             "--$APP_NAME --$CLASS:getAllInjuries --correo[{}] --Exception:[{}]",
             correoElectronico, ex.message
+        )
+        throw ex.toUnexpectedException()
+    }
+
+    fun getAllInjuries(): ResponseEntity<GetInjuriesResponse> = try {
+
+        val injuries = injuryRepository.findAll()
+
+        val responseHeaders = HttpHeaders()
+
+        ResponseEntity<GetInjuriesResponse>(DiagnosticMapper.getAllInjuriesEntity(injuries), responseHeaders, HttpStatus.OK)
+    } catch (ex: Exception) {
+        logger.error(
+            "--$APP_NAME --$CLASS:getAllInjuries --Exception:[{}]", ex.message
+        )
+        throw ex.toUnexpectedException()
+    }
+
+    fun getAllUsers(): ResponseEntity<GetUsersResponse> = try {
+
+        val users = userProfileRepository.findAll()
+
+        val responseHeaders = HttpHeaders()
+
+        ResponseEntity<GetUsersResponse>(DiagnosticMapper.getAllUsersEntity(users), responseHeaders, HttpStatus.OK)
+    } catch (ex: Exception) {
+        logger.error(
+            "--$APP_NAME --$CLASS:getAllInjuries --Exception:[{}]", ex.message
         )
         throw ex.toUnexpectedException()
     }
