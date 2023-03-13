@@ -5,6 +5,8 @@ import com.dermo.app.ammj.common.request.CreateAccountRequest
 import com.dermo.app.ammj.common.request.CreateInjuryRequest
 import com.dermo.app.ammj.common.request.UserProfileRequest
 import com.dermo.app.ammj.common.response.CreateAccountResponse
+import com.dermo.app.ammj.common.response.GetInjuriesResponse
+import com.dermo.app.ammj.common.response.GetUsersResponse
 import com.dermo.app.ammj.common.route.Route
 import com.dermo.app.ammj.core.service.DiagnosticService
 import com.google.gson.Gson
@@ -316,6 +318,165 @@ class DiagnosticControllerTest {
         mvc.perform(
             MockMvcRequestBuilders.post(Route.Diagnostic.INJURY_CREATE)
                 .content(jsonRequest)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn()
+    }
+
+    // Obtener lesiones asociadas a un usuario///
+
+    @Test
+    fun `Obtener lesion por email Exitosamente`() {
+
+        val correoElectronico = "mazf123@gmail.com"
+
+        val injuriesResponse = ResponseEntity(
+            GetInjuriesResponse(
+                description = "Lesiones registradas a la fecha",
+                createdAt = Timestamp.valueOf(LocalDateTime.now()),
+                updatedAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(injuriesResponse).`when`(diagnosticService).getAllInjuries(correoElectronico)
+
+        mvc.perform(
+            MockMvcRequestBuilders.get(Route.Diagnostic.INJURIES)
+                .headers(Generators.getAccountHeaders())
+                .queryParam("correoElectronico", correoElectronico)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn()
+    }
+
+    @Test
+    fun `Obtener lesion por email bad request`() {
+        val correoElectronico = "mazf123@gmail.com"
+
+        val injuriesResponse = ResponseEntity(
+            GetInjuriesResponse(
+                description = "Lesiones registradas a la fecha",
+                createdAt = Timestamp.valueOf(LocalDateTime.now()),
+                updatedAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(injuriesResponse).`when`(diagnosticService).getAllInjuries(correoElectronico)
+
+        mvc.perform(
+            MockMvcRequestBuilders.post(Route.Diagnostic.INJURIES)
+                .headers(Generators.getAccountHeaders())
+                .queryParam("correoElectronico", correoElectronico)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn()
+    }
+
+    // Obtener todas las lesiones registradas///
+
+    @Test
+    fun `Obtener todas las lesiones Exitosamente`() {
+
+        val injuriesResponse = ResponseEntity(
+            GetInjuriesResponse(
+                description = "Lesiones registradas a la fecha",
+                createdAt = Timestamp.valueOf(LocalDateTime.now()),
+                updatedAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(injuriesResponse).`when`(diagnosticService).getAllInjuries()
+
+        mvc.perform(
+            MockMvcRequestBuilders.get(Route.Diagnostic.INJURIES)
+                .headers(Generators.getAccountHeaders())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn()
+    }
+
+    @Test
+    fun `Obtener todas las lesiones bad request`() {
+
+        val injuriesResponse = ResponseEntity(
+            GetInjuriesResponse(
+                description = "Lesiones registradas a la fecha",
+                createdAt = Timestamp.valueOf(LocalDateTime.now()),
+                updatedAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(injuriesResponse).`when`(diagnosticService).getAllInjuries()
+
+        mvc.perform(
+            MockMvcRequestBuilders.get(Route.Diagnostic.INJURIES)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().is4xxClientError)
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn()
+    }
+
+    // Obtener todos los usuarios registrados///
+
+    @Test
+    fun `Obtener todos los usuarios registrados Exitosamente`() {
+
+        val usersResponse = ResponseEntity(
+            GetUsersResponse(
+                descripcion = "Usuarios registrados a la fecha",
+                createdAt = Timestamp.valueOf(LocalDateTime.now()),
+                updatedAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(usersResponse).`when`(diagnosticService).getAllUsers()
+
+        mvc.perform(
+            MockMvcRequestBuilders.get(Route.Diagnostic.USER_PROFILE_GET_ALL)
+                .headers(Generators.getAccountHeaders())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().is2xxSuccessful)
+            .andDo(MockMvcResultHandlers.print())
+            .andReturn()
+    }
+
+    @Test
+    fun `Obtener todos los usuarios registrados bad request`() {
+
+        val usersResponse = ResponseEntity(
+            GetUsersResponse(
+                descripcion = "Usuarios registrados a la fecha",
+                createdAt = Timestamp.valueOf(LocalDateTime.now()),
+                updatedAt = Timestamp.valueOf(LocalDateTime.now())
+            ),
+            HttpStatus.OK
+        )
+
+        Mockito.doReturn(usersResponse).`when`(diagnosticService).getAllUsers()
+
+        mvc.perform(
+            MockMvcRequestBuilders.get(Route.Diagnostic.USER_PROFILE_GET_ALL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         )

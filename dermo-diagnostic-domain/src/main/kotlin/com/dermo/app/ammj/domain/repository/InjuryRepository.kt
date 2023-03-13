@@ -8,5 +8,5 @@ import java.util.Optional
 @Repository
 interface InjuryRepository : JpaRepository<InjuryEntity, Long> {
 
-    fun findByCorreoElectronico(mail: String): Optional<InjuryEntity>
+    fun findByCorreoElectronico(mail: String): List<Optional<InjuryEntity>>
 }

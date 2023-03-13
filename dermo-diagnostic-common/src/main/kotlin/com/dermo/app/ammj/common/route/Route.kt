@@ -11,8 +11,10 @@ object Route {
         const val ACCOUNT = "/account/create"
         const val ACCOUNT_LOGIN = "/account/login"
         const val INJURY_CREATE = "/injury/create"
-        const val INJURIES = "/injuries/getall"
+        const val INJURIES = "/injury/getall"
+        const val INJURIES_ALL = "/injury/get/all"
         const val USER_PROFILE_CREATE = "/user/profile/create"
+        const val USER_PROFILE_GET_ALL = "/user/profile/get/all"
     }
 
     object Cache {
